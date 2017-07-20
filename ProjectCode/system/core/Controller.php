@@ -105,5 +105,16 @@ class CI_Controller {
             }
             
         }
+        //function that creates a result array with ID as array element and the hopeful clearly "name" column
+        function dropdownData($result,$selectColumn,$columnDescription )
+        {
+            $options = array();
+            $options[0] = "please select ".$columnDescription;
+            foreach ($result as $key => $value)
+            { 
+                $options[$value['id']] = $value[$selectColumn];
+            }
+            return $options;
+        }
 
 }

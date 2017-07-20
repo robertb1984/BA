@@ -1,10 +1,10 @@
 
-
-<div id="login-page">
+    
+<div id="">
 
     <?php
         echo form_fieldset("Please Login");
-        echo form_open('login/validate_user');
+        echo form_open('Login/validate_user');
         
         echo form_input('email','email');
         echo "<br/>";

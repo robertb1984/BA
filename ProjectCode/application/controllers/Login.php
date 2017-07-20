@@ -48,7 +48,7 @@
             }
             else {
                 echo "<script> alert('No user found'); </script>";
-                redirect('/users');
+                redirect('/reports');
             }
         }
         //signup Form in view
@@ -104,8 +104,6 @@
             $this->session->unset_userdata($userdata);
             redirect('users');
         }
-
-
 
     }
 /* 
