@@ -20,15 +20,14 @@
         //echo form_label('NEW VISIT','',$attributesGroup );
         echo form_label('examination '.$this_count,'',$attributesGroup );
     }
-    elseif(!(null===(isset($edit)? $edit : '')) ) {
-        echo form_label('examination '.$this_count,'',$attributesGroup );
+    elseif($new_visit)  {
+         echo form_label('NEW examination ','',$attributesGroup );
+          echo form_open('Reports/add_examination');
+       
     }
     else {
-        echo form_label('NEW examination ','',$attributesGroup );
-        if($new_visit)
-        {
-            echo form_open('Reports/add_examination');
-        }
+        echo form_label('examination '.$this_count,'',$attributesGroup );
+       
     }
     echo "<br/>";
 

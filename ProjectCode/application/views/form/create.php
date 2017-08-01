@@ -184,10 +184,8 @@ else
 	<strong id="var_name" name="var_name">Variable</strong>
 	<input type="hidden" name="var" value="var" />
 	<select name="rank">
-		<option disabled="disabled" selected="selected">please Select</option>
-		
-		<option value="2">Number</option>
-		<option value="1">Text</option>
+		<option value="2" >Number</option>
+		<option value="1" selected="selected">Text</option>
 	</select>
         <input type="text" name="Description" value="please enter text" />
 	<input type="button" value="X" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" />

@@ -109,6 +109,12 @@
             $query = $this->db->get('sicknesses',1);
             return $query->row()->name;
         }
+        public function get_sickness_status($id)
+        {
+            $query = $this->db->where('id',$id);
+            $query = $this->db->get('sicknesses',1);
+            return $query->row()->release_status;
+        }
         function get_ingredient_description($id)
         {
             $query = $this->db->where('id',$id);
@@ -687,13 +693,15 @@
        }
        function update_closure($report_id )
        {
-           $closure= array(
+            $this->db->trans_start();
+            $closure= array(
                'closing_comment'=> $this->input->post('closing_comment'),
                'success_rating' => $this->input->post('rating'),
                
            );
            $this->db->where('report_id', $report_id);
            $this->db->update('reports_closure', $closure);
+           $this->db->trans_complete();
        }
         
     }

@@ -27,19 +27,7 @@
                             {  ?>
                             <li><a href="<?php echo base_url(); ?>reports">My cases</a></li>
                             <li><a href="<?php echo base_url(); ?>report_search">Reprocase search</a></li>
-                            <li><a href="<?php echo base_url(); ?>login"><?php
-                            //switch between strings "logout/login" rest is controlled in the Login controller
-                                                                                $isAuth = FALSE;
-                                                                                $isAuth = $this->session->userdata('is_auth');
-                                                                                if(!$isAuth)
-                                                                                {
-                                                                                    echo 'Login';
-
-                                                                                }
-                                                                                else{
-                                                                                    echo'Logout';
-                                                                                }
-                                                                            ?></a></li>
+                            <li><a href="<?php echo base_url(); ?>login">Logout</a></li>
 
 
 
@@ -57,6 +45,7 @@
                                     <li><a href="<?php echo base_url(); ?>create_visits">Create examination form</a></li>
                                     <li><a href="<?php echo base_url(); ?>release_form">Release one of your forms</a></li>
                                     <li class="dropdown-header"> --------Diverse----------</li>
+                                    <li><a href="<?php echo base_url(); ?>description">Edit disease questions</a></li>
                                     <li><a href="<?php echo base_url(); ?>treatments">Treatments</a></li>
                                     <li><a href="<?php echo base_url(); ?>species">Add species</a></li> 
                                 </ul>

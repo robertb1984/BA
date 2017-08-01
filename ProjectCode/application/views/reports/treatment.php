@@ -158,7 +158,7 @@ function fill_treatment(data)
             echo "<br/>";
             echo form_label('count : ','treatment_count');
             echo form_input('treatment_count', set_value('treatment_count',isset($treatment_details[0]['count']) ? $treatment_details[0]['count'] : ''),'id=treatment_count '.$readonlyTreat);
-            //echo form_label('times each : ','each_period');
+            echo form_label('times');
             //echo form_dropdown('each_period',$timesOptions, set_value('each_period',isset($treatment_details[0]['each_period']) ? $treatment_details[0]['each_period'] : ''),'id=each_period '.$disabledTreat);
             echo "<br/>";
             echo form_label('Notes : ','treatment_notes');

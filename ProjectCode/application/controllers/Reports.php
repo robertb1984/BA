@@ -42,7 +42,7 @@
             //php block
             //just created reports
             $this->load->view('reports/myreports',$data);
-            //not closed still running rports
+            //not closed still running reports
             //$this->load->view('reports/myreports',$running);
             //My closed Reports
             $this->load->view('reports/myreports',$closed);
@@ -50,9 +50,7 @@
             $this->load->view('templates/footer');
 
         }
-        //reworked FORM
-        
-        //end reworkedFORM
+      
         public function report_search()
         {
             $data['title']= 'Search for Case';
@@ -219,7 +217,7 @@
             }
            
         }
-        
+        /*
         function create_cystic_ovarian_disease()
         {
             $this->load->library('form_validation');
@@ -435,28 +433,14 @@
             
             $sicknessID = $init['loaded_report_entries']['sickness_id'];
             
-            $animal['id'] =  $init['loaded_report_entries']['animal_id'];
-            $animal['load_form_data'] = $load_document;
-            $animal['data'] = $this->Report_model->load_animal($animal['id']);
+            $animalID =  $init['loaded_report_entries']['animal_id'];
+            $animal = $this->prepare_view_animal($load_document,$animalID);
             
-            $data['load_form_data'] = $load_document;
-            $data['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
-            $data['ingredients'] =  $this->Report_model->get_ingredients();
-            $data['treatment_details'] = $this->Report_model->get_details_for_treatment($data['treatment_selected']);
-            $data['dropdown_defined_treatments'] = $this->dropdownData($data['ingredients'], 'name', 'Ingredient/Treatment');
-            $data['treatments']= $this->Report_model->get_treatments_for_sickness($init['loaded_report_entries']['sickness_id']);
-            $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
+            $treatmentdata['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
+            $treatmentdata = $this->prepare_view_treatment($treatmentdata,$load_document,$sicknessID);
             
-            $form_data['load_form_data'] = $load_document;
-            $form_data['entries'] = $this->Report_model->load_input_fields_results($id);
-            foreach ($form_data['entries'] as $value)
-            {
-                if($value['type'] == "drop")
-                {
-                    $form_data[$value['name']]= $this->Report_model->get_dropdown_data($value['id']);
-                    $form_data['dropdowns'][$value['name']]= $this->dropdownData($form_data[$value['name']], 'text', $value['description']); 
-                }
-            }
+            $form_data = $this->prepare_view_sickness($load_document,$id);
+            
             $this->load->view('templates/header');
             $closing_report['report_id'] =$id;
             //print_r($init['loaded_report_entries']['status']);
@@ -468,25 +452,67 @@
             }
             $this->load->view('reports/animal',$animal);
             $this->load->view('reports/sickness',$form_data);
-            $this->load->view('reports/treatment',$data);
+            $this->load->view('reports/treatment',$treatmentdata);
             $visit_count = $this->Report_model->get_visit_count($id);
             
             //print_r($visit_count);
             if($visit_count > 0)
             {
-                $this_count =1;
+                
+                $edit = null;
+                //print_r($visits);
+                $this->show_created_visits($load_document,$id,$edit);
+            }
+            $this->load->view('templates/footer');
+        }
+        //---------------------------Refactoring ------------------------------
+        //-----------moving of prepare data logic out of view methods--------------
+        function prepare_view_animal($lock_document,$animalID)
+        {
+            $animal['id'] =  $animalID;
+            $animal['load_form_data'] = $lock_document;
+            $animal['data'] = $this->Report_model->load_animal($animal['id']);
+            return $animal;
+        }
+        function prepare_view_treatment($data,$lock_document,$sicknessID)
+        {
+            $data['load_form_data'] = $lock_document;
+            $data['unlock_choice'] = !$lock_document;
+            $data['ingredients'] =  $this->Report_model->get_ingredients();
+            $data['treatment_details'] = $this->Report_model->get_details_for_treatment($data['treatment_selected']);
+            $data['dropdown_defined_treatments'] = $this->dropdownData($data['ingredients'], 'name', 'Ingredient/Treatment');
+            $data['treatments']= $this->Report_model->get_treatments_for_sickness($sicknessID);
+            $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
+            return $data;
+        }
+        function prepare_view_sickness($lock_document,$id)
+        {
+            $form_data['load_form_data'] = $lock_document;
+            $form_data['entries'] = $this->Report_model->load_input_fields_results($id);
+            foreach ($form_data['entries'] as $value)
+            {
+                if($value['type'] == "drop")
+                {
+                    $form_data[$value['name']]= $this->Report_model->get_dropdown_data($value['id']);
+                    $form_data['dropdowns'][$value['name']]= $this->dropdownData($form_data[$value['name']], 'text', $value['description']); 
+                }
+            }
+            return $form_data;
+        }
+        function show_created_visits($lock_document,$id,$edit)
+        {
+             $this_count =1;
                 $visits = $this->Report_model->get_visits($id);
                 //print_r($visits);
+                $visit['load_form_data'] = $lock_document;
+                $visit['edit'] = $edit;
                 foreach($visits as $this_visit)
                 {
                     $visit['new_visit'] = false;
-                    $visit['edit'] = null;
-                    $visit['load_form_data'] = true;
                     $visit['this_count'] = $this_count;
                     $visit['entries'] = $this->Report_model->load_visit_fields_results($this_visit['id']);
                     foreach ($visit['entries'] as $value)
                     {
-                        
                         if($value['type'] == "drop")
                         {
                             $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
@@ -497,14 +523,25 @@
                     $this->load->view('reports/visit',$visit);
                     $this_count++;
                 }
-            }
-            $this->load->view('templates/footer');
         }
-        //---------------------------Refaktoring ------------------------------
-        //-----------moving of prepare logic out of horror method--------------
-        function prepare_view_animal()
+        function create_new_visit($id,$visit_count,$sicknessID)
         {
+            $visit['report_id'] = $id;
+            $visit['new_visit'] = true;
+            $visit['this_count'] = $visit_count++;
+            $visit['load_form_data'] = false;
             
+            $visit['entries'] = $this->Report_model->load_visit_fields($sicknessID);
+            foreach ($visit['entries'] as $value) {
+                if($value['type'] == "drop")
+                {
+                    //todo get_dropdown_data_visits
+                    $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
+                    $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
+                }
+            }
+                //load formdata for visit
+            $this->load->view('reports/visit',$visit);
         }
         //---------------------------------------------------------------------
         //--------------------------calls to load_edit_report------------------
@@ -519,7 +556,7 @@
         {
             $this->load_edit_report($id, null, null , true);
         }
-        //complex function. Ripe for refactoring.
+        //complex function.
         //depending on the variables set, it can be used for different tasks
         //$id is always the id of the report
         //$add_visit if true you will be able to "append" a examination
@@ -550,34 +587,17 @@
             $sicknessID = $init['loaded_report_entries']['sickness_id'];
             
             //prepare animal data
-            $animal['id'] =  $init['loaded_report_entries']['animal_id'];
-            $animal['load_form_data'] = $lock_document;
-            $animal['data'] = $this->Report_model->load_animal($animal['id']);
             
+            $animal = $this->prepare_view_animal($lock_document,$init['loaded_report_entries']['animal_id']);
             //all treatment data
-            $data['load_form_data'] = $lock_document;
-            $data['unlock_choice'] = !$lock_document;
-            $data['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
-            $data['ingredients'] =  $this->Report_model->get_ingredients();
-            $data['treatment_details'] = $this->Report_model->get_details_for_treatment($data['treatment_selected']);
-            $data['dropdown_defined_treatments'] = $this->dropdownData($data['ingredients'], 'name', 'Ingredient/Treatment');
-            $data['treatments']= $this->Report_model->get_treatments_for_sickness($init['loaded_report_entries']['sickness_id']);
-            $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
+            $treatmentdata['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
+            $treatmentdata = $this->prepare_view_treatment($treatmentdata,$lock_document,$sicknessID);
             
             //data for the disease, prepare dropdown arrays
-            $form_data['load_form_data'] = $lock_document;
-            $form_data['entries'] = $this->Report_model->load_input_fields_results($id);
-            foreach ($form_data['entries'] as $value)
-            {
-                if($value['type'] == "drop")
-                {
-                    $form_data[$value['name']]= $this->Report_model->get_dropdown_data($value['id']);
-                    $form_data['dropdowns'][$value['name']]= $this->dropdownData($form_data[$value['name']], 'text', $value['description']); 
-                }
-            }
+            $form_data = $this->prepare_view_sickness($lock_document, $id);
             $this->load->view('templates/header');
             
-            //check if this a edit call and "place" button if it is 
+            //check if this is a edit call and "place" button if it is 
             if(!$lock_document)
             {
                
@@ -598,58 +618,22 @@
                 $closing_report['entrie'] = $this->Report_model->load_report_closure($id);
                 $this->load->view('reports/closing',$closing_report);
             }
-            
+            // create different views
             $this->load->view('reports/animal',$animal);
             $this->load->view('reports/sickness',$form_data);
-            $this->load->view('reports/treatment',$data);
+            $this->load->view('reports/treatment',$treatmentdata);
            
             $visit_count = $this->Report_model->get_visit_count($id);
             //$count_existing_visits= $count_existing_visits['visit_count'];
             //print_r($visit_count);
             if($visit_count > 0)
             {
-                $this_count =1;
-                $visits = $this->Report_model->get_visits($id);
-                //print_r($visits);
-                $visit['load_form_data'] = $lock_document;
-                $visit['edit'] = $edit;
-                foreach($visits as $this_visit)
-                {
-                    $visit['new_visit'] = false;
-                    $visit['this_count'] = $this_count;
-                    $visit['entries'] = $this->Report_model->load_visit_fields_results($this_visit['id']);
-                    foreach ($visit['entries'] as $value)
-                    {
-                        if($value['type'] == "drop")
-                        {
-                            $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
-                            $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
-                        }
-                    }
-                
-                    $this->load->view('reports/visit',$visit);
-                    $this_count++;
-                }
+                $this->show_created_visits($lock_document,$id,$edit);
             }
             //add Visit
             if($add_visit)
             {
-                $visit['report_id'] = $id;
-                $visit['new_visit'] = true;
-                $visit['this_count'] = $visit_count++;
-                $visit['load_form_data'] = false;
-                //todo load_visit_fields
-                $visit['entries'] = $this->Report_model->load_visit_fields($sicknessID);
-                foreach ($visit['entries'] as $value) {
-                    if($value['type'] == "drop")
-                    {
-                        //todo get_dropdown_data_visits
-                        $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
-                        $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
-                    }
-                }
-                //load formdata for visit
-                $this->load->view('reports/visit',$visit);
+                $this->create_new_visit($id,$visit_count,$sicknessID);
             }
             if(!$lock_document)
             {
@@ -657,7 +641,6 @@
                 $edit_data['this_report_id'] = $id;
                 $edit_data['this_visit_count'] = $visit_count;
                 //$edit_data[''] = ;
-                
                 $this->load->view('reports/form_submit_edit_case',$edit_data);
             }
             $this->load->view('templates/footer');

@@ -183,7 +183,7 @@
 
             $this->db->trans_complete();
         }
-        //use disease block for examination
+        //Clone disease/sickness block for examination
         function use_disease_block($block_id)
         {
            $this->db->trans_start();
@@ -248,5 +248,42 @@
             $this->db->set('release_status', '1', FALSE);
             $this->db->where('id', $form_id);
             $this->db->update('sicknesses');
+        }
+        function get_sicknesses()
+        {
+            
+            $query = $this->db->get('sicknesses');
+            return $query->result_array();
+        }
+        function load_input_fields($id)
+        {
+            $query = $this->db->query('
+                SELECT sickness_value_definition.id ,type, sickness_value_definition.name , sickness_value_definition.description, sickness_block.name AS blockname, "basic form" AS fromThis
+                FROM sickness_value_definition
+                JOIN sickness_block ON sickness_block.id = block_id
+                LEFT JOIN sickness_value_types ON sickness_value_types.id = sickness_value_definition.type_id
+                WHERE sickness_id = '.$id.'
+                UNION
+                SELECT visit_value_definition.id ,type, visit_value_definition.name , visit_value_definition.description, visit_block.name AS blockname, "examination" AS fromThis
+                FROM visit_value_definition
+                JOIN visit_block ON visit_block.id = block_id
+                LEFT JOIN sickness_value_types ON sickness_value_types.id = visit_value_definition.type_id
+                WHERE sickness_id = '.$id.'
+                 ;');
+            return $query->result_array();
+        }
+        function update_description($table,$id,$description)
+        {
+            $description= array(
+               'description'=> $description
+           );
+           $this->db->where('id', $id);
+           $this->db->update($table, $description);
+           return 1;
+        }
+        function delete_non_released($sickness_id)
+        {
+            $this->db->where('id', $sickness_id);
+            $this->db->delete('sicknesses');
         }
  }

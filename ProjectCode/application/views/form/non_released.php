@@ -22,6 +22,7 @@ tr:nth-child(even) {
     <th>Disease form name</th>
     <th>Test cases created</th>
     <th>release</th>
+    <th>delete</th>
     
   </tr>
 <?php foreach($forms as $form) :?>
@@ -32,6 +33,7 @@ tr:nth-child(even) {
         else{echo 0;}?>    
         </th>
         <th><a class="btn-default" href="Form/release_form/<?php echo $form['id']; ?>">release</a></th>
+        <th><a class="btn-default" href="Form/delete_non_released/<?php echo $form['id']; ?>">delete</a></th>
         
     </tr>
 
