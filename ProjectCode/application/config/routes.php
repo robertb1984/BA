@@ -53,7 +53,9 @@ $route['logout'] = 'Login/logout';
 $route['reports'] = 'Reports/overview';
 $route['login'] = 'Login/index';
 $route['users'] = 'Users/index';
+$route['add_email'] = 'Users/show_emails';
 $route['create_form'] = 'Form/create_new';
+$route['treatments'] = 'Reports/treatments';
 
 $route['create_visits'] = 'Form/select_disease_form';
 $route['report_search'] = 'Reports/report_search';

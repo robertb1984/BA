@@ -38,5 +38,5 @@ function visualize_description(data)
     echo "<br/>";
     echo "<br/>";
 ?>
-<div><h5> Description of sickness :</h5></div>
+<div><h5> Description of disease/case :</h5></div>
 <div class="sickness_description" id="description"></div>

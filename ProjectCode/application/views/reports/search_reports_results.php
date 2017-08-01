@@ -20,10 +20,11 @@ tr:nth-child(even) {
 
 <table>
   <tr>
-    <th>report_id</th>
-    <th>Sickness name</th>
-    <th>Sickness id</th>
-    <th>By User ID</th>
+    <th>Animalname</th>
+    <th>Species</th>
+    <th>Gender</th>
+    <th>Disease/Case</th>
+    <th>By User</th>
     <th>created at </th>
     <th> view  </th>
   </tr>
@@ -34,10 +35,11 @@ tr:nth-child(even) {
   );
 ?>
     <tr>
-        <th><?php echo $this_report['id']; ?></th>
-        <th><?php echo $this_report['name']; ?></th>
-        <th><?php echo $this_report['sickness_id']; ?></th>
-        <th><?php echo $this_report['user_id']; ?></th>
+        <th><?php echo $this_report['animalname']; ?></th>
+        <th><?php echo $this_report['species']; ?></th>
+        <th><?php if($this_report['isFemale']){echo 'female';}else{echo 'female';}  ?></th>
+        <th><?php echo $this_report['disease']; ?></th>
+        <th><?php echo $this_report['username']; ?></th>
         <th><?php echo $this_report['created']; ?></th>
         <th><a class="btn-default" href="../Reports/load_report/<?php echo $this_report['id']; ?>">view details</a></th>
     </tr>

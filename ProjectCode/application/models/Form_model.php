@@ -1,6 +1,10 @@
 <?php
     class Form_model extends CI_Model
     {
+        public function __construct() {
+            $this->load->database();
+            $this->load->helper('date');
+        }
 
         //basic function to save data into a table and get the last inserted id back.(todo : could be added to CI_Model)
         function save_data($data, $table)
@@ -24,7 +28,9 @@
             $this->db->trans_start();
             $insert_sickenss = array(
                 'name' => $data[0]['sickness']['Name'],
-                'description' => $data[0]['sickness']['description']
+                'description' => $data[0]['sickness']['description'],
+                'creator' => $this->session->userdata('user_id')
+                
             );
             
             $inserted_sickness_id = $this->save_data($insert_sickenss, 'sicknesses');

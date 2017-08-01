@@ -12,6 +12,7 @@ function add_block()
     }
     else
     {
+        //var_name = var_name.replace(/ /g, '_');
         entries++;
         var newNode = document.getElementById('block').cloneNode(true);
         newNode.id = '';
@@ -58,13 +59,14 @@ function add_entrie(type)
             exit;
         }
 	// Ask the user for input
-	var var_name = prompt("Variable Name. Please no empty space use _","");
+	var var_name = prompt("Variable Name. Name has to be unique for this document","");
 	if (var_name == "" || var_name == null)
 	{
 		alert("Please enter a name for the variable .");
 	}
 	else
 	{
+                var_name = var_name.replace(/ /g, '_');
 		entries++;
 		// Find the element to be copied
 		var newNode = document.getElementById(type).cloneNode(true);
@@ -202,6 +204,6 @@ else
 	<input type="hidden" name="var" value="var" />
         <input type="hidden" name="rank" value="3" />
         <input type="text" name="Description" value="please enter text" />
-        <input type="text" name="Dropdowns" value="please enter dropdowns comma separated" />
+        <input type="text" name="Dropdowns" title="please enter dropdown values comma separated Like= red, blue,..." value="Values" />
 	<input type="button" value="X" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" />
 </div>

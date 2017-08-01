@@ -22,15 +22,18 @@
         public function overview()
         {
             
-            $data['title']= 'My just created Reports';
+            $data['title']= 'My created Cases';
             $data['status'] = 1;
             $data['myreports']= $this->Report_model->get_myreports($data['status']);
-            
+            $running_cases = $this->Report_model->get_myreports('2');
+            $data['myreports'] = array_merge($data['myreports'], $running_cases);
+            //print_r($running_cases);
+        /*
             $running['title']= 'My not closed Reports';
             $running['status'] = 2;
             $running['myreports']= $this->Report_model->get_myreports($running['status']);
-            
-            $closed['title']= 'My closed Reports';
+            */
+            $closed['title']= 'My closed Cases';
             $closed['status'] = 3;
             $closed['myreports']= $this->Report_model->get_myreports($closed['status']);
             //print_r($data['users']);
@@ -40,7 +43,7 @@
             //just created reports
             $this->load->view('reports/myreports',$data);
             //not closed still running rports
-            $this->load->view('reports/myreports',$running);
+            //$this->load->view('reports/myreports',$running);
             //My closed Reports
             $this->load->view('reports/myreports',$closed);
             
@@ -54,7 +57,7 @@
         {
             $data['title']= 'Search for Case';
             $data['sicknesses']= $this->Report_model->get_sicknesses();
-            $data['dropdownSick'] = $this->dropdownData($data['sicknesses'], 'name', 'Sickness');
+            $data['dropdownSick'] = $this->dropdownData($data['sicknesses'], 'name', 'disease/case');
             
             $this->load->view('templates/header');
             $this->load->view('reports/report_search',$data);
@@ -85,6 +88,7 @@
             $this->load->view('reports/newreport',$data);
             $this->load->view('templates/footer');
         }
+        //new generate_form released for the EAV update
         function new_generate_form()
         {
             
@@ -159,11 +163,17 @@
         */
         function create_report()
         {
+            //$variable = $this->input->raw_input_stream;
+            //print_r($variable);
             
             $this->load->library('form_validation');
             //animal
             $this->form_validation->set_rules("name","name","trim|required");
             $this->form_validation->set_rules("gender","gender","trim|required");
+            $this->form_validation->set_rules("weight","weight","trim|numeric");
+            $this->form_validation->set_rules("age","age","trim|numeric");
+            $this->form_validation->set_rules("time_interval","time_interval","trim");
+            $this->form_validation->set_rules("race","race","trim");
             //sickness
             $sicknessID = $this->input->post('sickness');
             $entries = $this->Report_model->load_input_fields($sicknessID);
@@ -206,6 +216,7 @@
   
                 redirect('/reports');
             }
+           
         }
         
         function create_cystic_ovarian_disease()
@@ -410,7 +421,7 @@
             $this->load->view('reports/treatment',$data);
             $this->load->view('templates/footer');
         }
-        //new load function
+        //new load function for EAV design
         function load_report_new($id)
         {
             $load_document = true;
@@ -443,6 +454,14 @@
                 }
             }
             $this->load->view('templates/header');
+            $closing_report['report_id'] =$id;
+            //print_r($init['loaded_report_entries']['status']);
+            if($init['loaded_report_entries']['status'] == 3)
+            {
+                $closing_report['load_form_data'] = $load_document;
+                $closing_report['entrie'] = $this->Report_model->load_report_closure($id);
+                $this->load->view('reports/closing',$closing_report);
+            }
             $this->load->view('reports/animal',$animal);
             $this->load->view('reports/sickness',$form_data);
             $this->load->view('reports/treatment',$data);
@@ -457,7 +476,8 @@
                 foreach($visits as $this_visit)
                 {
                     $visit['new_visit'] = false;
-                    
+                    $visit['edit'] = null;
+                    $visit['load_form_data'] = true;
                     $visit['this_count'] = $this_count;
                     $visit['entries'] = $this->Report_model->load_visit_fields_results($this_visit['id']);
                     foreach ($visit['entries'] as $value)
@@ -473,31 +493,60 @@
                     $this->load->view('reports/visit',$visit);
                     $this_count++;
                 }
-                 
             }
             $this->load->view('templates/footer');
         }
-        function load_edit_report($id , $add_visit = null)
+        //---------------------------------------------------------------------
+        //--------------------------calls to load_edit_report------------------
+        
+        //call for closing open reports
+        function close_report($id)
         {
+            $this->load_edit_report($id , null, true, null);
+        }
+        //a call for a report edit
+        function edit_report($id)
+        {
+            $this->load_edit_report($id, null, null , true);
+        }
+        //complex function. Ripe for refactoring.
+        //depending on the variables set, it can be used for different tasks
+        //$id is always the id of the report
+        //$add_visit if true you will be able to "append" a examination
+        //$close_report if true the user can add his closing comments and is closing it after.
+        //$lock_document used in all loaded data fields for locking the fields.
+        function load_edit_report($id , $add_visit = null, $close_report = null, $edit = null)
+        {
+            $lock_document = false;
             //check for add visit 
-            //print_r($add_visit);
-            if(null == ($add_visit))
+            //print_r('before : '.$lock_document);
+            if(null === ($add_visit))
             {
                 $add_visit = false;
             }
-             
-            $lock_document = true;
+            if(null === ($close_report))
+            {
+                $close_report = false;
+            }
+            if(null ===($edit))
+            {
+                $lock_document = true;
+            }
+            //print_r('after : '.$lock_document);
             $init['load_form_data'] = $lock_document;
             $init['reportID']= $id;
             $init['loaded_report_entries'] = $this->Report_model->load_report_entries($id);
             
             $sicknessID = $init['loaded_report_entries']['sickness_id'];
             
+            //prepare animal data
             $animal['id'] =  $init['loaded_report_entries']['animal_id'];
             $animal['load_form_data'] = $lock_document;
             $animal['data'] = $this->Report_model->load_animal($animal['id']);
             
+            //all treatment data
             $data['load_form_data'] = $lock_document;
+            $data['unlock_choice'] = !$lock_document;
             $data['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
             $data['ingredients'] =  $this->Report_model->get_ingredients();
             $data['treatment_details'] = $this->Report_model->get_details_for_treatment($data['treatment_selected']);
@@ -505,6 +554,7 @@
             $data['treatments']= $this->Report_model->get_treatments_for_sickness($init['loaded_report_entries']['sickness_id']);
             $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
             
+            //data for the disease, prepare dropdown arrays
             $form_data['load_form_data'] = $lock_document;
             $form_data['entries'] = $this->Report_model->load_input_fields_results($id);
             foreach ($form_data['entries'] as $value)
@@ -516,12 +566,33 @@
                 }
             }
             $this->load->view('templates/header');
+            
+            //check if this a edit call and "place" button if it is 
+            if(!$lock_document)
+            {
+               
+                $this->load->view('reports/form_open_edit_case',$init);
+            }
+            $closing_report['report_id'] = $id;
+            if($close_report)
+            {
+                $closing_report['new'] = $close_report;
+                $closing_report['load_form_data'] = false;
+                //$closing_report['entrie'] = $this->Report_model->load_report_closure($id);
+                $this->load->view('reports/closing',$closing_report);
+            }
+            //print_r($init['loaded_report_entries']['status']);
+            if($init['loaded_report_entries']['status'] == 3)
+            {
+                $closing_report['load_form_data'] = false;
+                $closing_report['entrie'] = $this->Report_model->load_report_closure($id);
+                $this->load->view('reports/closing',$closing_report);
+            }
+            
             $this->load->view('reports/animal',$animal);
             $this->load->view('reports/sickness',$form_data);
             $this->load->view('reports/treatment',$data);
-            
-            //todo get past visits count
-            
+           
             $visit_count = $this->Report_model->get_visit_count($id);
             //$count_existing_visits= $count_existing_visits['visit_count'];
             //print_r($visit_count);
@@ -531,6 +602,7 @@
                 $visits = $this->Report_model->get_visits($id);
                 //print_r($visits);
                 $visit['load_form_data'] = $lock_document;
+                $visit['edit'] = $edit;
                 foreach($visits as $this_visit)
                 {
                     $visit['new_visit'] = false;
@@ -548,7 +620,6 @@
                     $this->load->view('reports/visit',$visit);
                     $this_count++;
                 }
-                 
             }
             //add Visit
             if($add_visit)
@@ -569,6 +640,15 @@
                 }
                 //load formdata for visit
                 $this->load->view('reports/visit',$visit);
+            }
+            if(!$lock_document)
+            {
+                //todo after edit of treatment
+                $edit_data['this_report_id'] = $id;
+                $edit_data['this_visit_count'] = $visit_count;
+                //$edit_data[''] = ;
+                
+                $this->load->view('reports/form_submit_edit_case',$edit_data);
             }
             $this->load->view('templates/footer');
         }
@@ -610,12 +690,10 @@
             $this->load->library('form_validation');
             
             $report_id = $this->input->post('report');
+            $this->check_for_ownership($report_id);
             $examination_count = $this->input->post('count_examination');
             //change status of report
-            if($examination_count == 0)
-            {
-                $this->Report_model->change_status_of_report($report_id);
-            }
+       
             $entries = $this->Report_model->load_examination_fields($report_id);
             print_r($entries);
             foreach ($entries as $entrie)
@@ -634,11 +712,187 @@
             else
             {
                 //save the examination
+                if($examination_count == 0)
+                {
+                    $this->Report_model->change_status_of_report($report_id);
+                }
                 
                 $this->Report_model->save_examination_values($report_id, $entries,$examination_count);
   
                 redirect('/reports');
             }
+        }
+        function treatments()
+        {
+            $this->is_admin();
+            $data['title']= 'Treatments';
+            $data['treatments']= $this->Report_model->get_ingredients();
+            $this->load->view('templates/header');
+            $this->load->view('reports/show_treatments',$data);
+            $this->load->view('templates/footer');
+        }
+        function edit_create_treatment($id = null)
+        {
+            
+            $data;
+            $this->is_admin();
+            if($id != 0)
+            {
+                $data['lock_name'] = true;
+                $data['entries'] = $this->Report_model->get_ingredients($id);
+            }
+            else
+            {
+                $data['lock_name'] = false;
+                $data['entries'] = array(array(
+                    'name'=>'',
+                    'note'=>''
+                ));
+            }
+            //print_r($data);
+            $this->load->view('templates/header');
+            $this->load->view('reports/edit_create_treatment',$data);
+            $this->load->view('templates/footer');
+        }
+        function save_treatment()
+        {
+            //$variable = $this->input->raw_input_stream;
+            //print_r($variable);
+            $this->load->library('form_validation');
+            
+            if(null!==($this->input->post('name')))
+            {
+                $this->form_validation->set_rules("name","Name","trim|required");
+            }
+            $this->form_validation->set_rules("left_size_diameter","left_size_diameter","trim|max_length[1024]");
+            
+            if($this->form_validation->run() === FALSE)
+            {
+                $this->edit_create_treatment($this->input->post('id'));
+                 
+            }
+            else
+            {
+                //save the treatment
+                
+                $this->Report_model->save_treatment_ingredient($this->input->post('name'));
+  
+                redirect('/treatments');
+            }
+        }
+
+        function save_closing_comment()
+        {
+            $id = $this->input->post('report_id');
+            $this->Report_model->close_report($id);
+            redirect('reports');
+        }
+        function save_changes_to_case()
+        {
+            //$variable = $this->input->raw_input_stream;
+            //print_r($variable);
+            //get init variables
+            $report_id = $this->input->post('report_id');
+            //Check for ownership and load report data.
+            $report_data = $this->check_for_ownership($report_id);
+            
+            //validation
+            $this->load->library('form_validation');
+            //animal
+            $this->form_validation->set_rules("name","name","trim|required");
+            $this->form_validation->set_rules("gender","gender","trim|required");
+            $this->form_validation->set_rules("weight","weight","trim|numeric");
+            $this->form_validation->set_rules("age","age","trim|numeric");
+            $this->form_validation->set_rules("time_interval","time_interval","trim");
+            $this->form_validation->set_rules("race","race","trim");
+            //sickness
+            $sicknessID = $this->input->post('sickness');
+            $entries = $this->Report_model->load_input_fields($sicknessID);
+            foreach ($entries as $entrie)
+            {
+                $this->form_validation->set_rules($entrie['name'],$entrie['name'],$entrie['validation']);
+            }              
+            $new_treatment = $this->input->post('treatment');
+            //treatment
+            if($new_treatment == 0)
+            {
+                $this->form_validation->set_rules("ingredient","ingredient","trim|required");
+                $this->form_validation->set_rules("dosage","dosage","trim|required");
+                $this->form_validation->set_rules("taken_for","taken_for","trim");
+                $this->form_validation->set_rules("times","times","trim|required|numeric");
+                $this->form_validation->set_rules("treatment_count","treatment_count","trim|required|numeric");
+                $this->form_validation->set_rules("each_period","each_period","trim");
+            }
+            $this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+            
+            if($this->form_validation->run() === FALSE)
+            {
+               $this->edit_report($report_id);
+               echo "<script> alert('failed validation'); </script>";
+                 
+            }
+            else
+            {
+                
+                //update animal
+                $this->Report_model->update_animal($report_data['animal_id']);
+                //a treatment can only be created new so it sees no change in other cases
+                
+                if($new_treatment == 0)
+                {
+                    $animal = $this->Report_model->load_animal($report_data['animal_id']);
+                    $new_treatment = $this->Report_model->save_treatment($animal['subspecies_id']);
+                }
+                if($report_data['treatment_for_sickness_id'] != $new_treatment)
+                {
+                    $this->Report_model->update_used_treatment($report_id, $new_treatment );
+                }
+                //all old disease(sickness) entries for this report
+                $disease_entries_data = $this->Report_model->load_input_fields_results($report_id);
+                foreach ($disease_entries_data as $key => $entry) 
+                {
+                    $disease_entries_data[$key]['value'] = $this->input->post($entry['name']) ;
+                    //print_r('VALUE: '.$this->input->post($entry['name']));
+                }
+                $this->Report_model->update_sickness_entries($disease_entries_data);
+                //the
+                $visit_count = $this->Report_model->get_visit_count($report_id);
+                if($visit_count > 0)
+                {
+                    $this_count =1;
+                    $visits = $this->Report_model->get_visits($report_id);
+                    foreach($visits as $this_visit)
+                    {
+                        
+                        $entries = $this->Report_model->load_visit_fields_results($this_visit['id']);
+                        foreach ($entries as $key => $entry)
+                        {
+                            $entries[$key]['value'] = $this->input->post($entry['name'].$this_count) ;
+                        }
+                        $this->Report_model->update_visit_entries($entries);
+                        $this_count++;
+                    }
+                }
+                if($report_data['status'] == 3)
+                {
+                    $this->Report_model->update_closure($report_id );
+                }
+                $this->load_report($report_id);
+                echo "<script> alert('Success'); </script>";
+
+            }
+            
+        }
+        //does two things:
+        //1.checks for ownership and returns report data if true
+        //2.if not owner will use controller function for redirection
+        function check_for_ownership($report_id)
+        {
+            $report_data = $this->Report_model->load_report_entries($report_id);
+            //check if user is owner
+            $this->is_owner($report_data['user_id']);
+            return $report_data;
+            
         }
 
     }

@@ -12,12 +12,15 @@
     );
     $readonly = '';
     $disabled = '';
-    if($load_form_data == true)
+    if(($load_form_data == true) && (null===$edit))
     {
         $readonly= 'readonly';
         $disabled = 'disabled';
         //todo echo visitcount
         //echo form_label('NEW VISIT','',$attributesGroup );
+        echo form_label('examination '.$this_count,'',$attributesGroup );
+    }
+    elseif(!(null===$edit) ) {
         echo form_label('examination '.$this_count,'',$attributesGroup );
     }
     else {
@@ -54,6 +57,8 @@
                 break;
         }
     }
+    echo validation_errors(' <p class ="error">');
+    echo "<br/>";
      if($new_visit)
         {
             echo form_hidden('count_examination',$this_count);

@@ -67,7 +67,7 @@
            
            //validate
            $this->form_validation->set_rules('name','Name','trim|required');
-           $this->form_validation->set_rules('email','E-mail','trim|required');
+           $this->form_validation->set_rules('email','E-mail','trim|required|valid_email|is_unique[users.email]');
            $this->form_validation->set_rules('password','Password','trim|required|min_length[8]|max_length[32]');
            $this->form_validation->set_rules('password2','Password confirmation','trim|required|matches[password]');
            
@@ -78,21 +78,20 @@
            }
            else
            {
+               
                //create user and redirect to home
                //toDO redirect to "my reports"
                $this->load->model('user_model');
+               
                $createmember = $this->user_model->create_user();
                if($createmember)
                {
-                    $page ='home';
-                    $this->load->view('templates/header');
-                    $this->load->view('pages/'.$page);
-                    $this->load->view('templates/footer');
+                    redirect('/reports');
                }
                else
                {
       //             alert('Email already registered');
-                  echo "<script> alert('email already in use'); </script>";
+                  echo "<script> alert('email already in use or not allowed'); </script>";
                    $this->signup();
                }
            }

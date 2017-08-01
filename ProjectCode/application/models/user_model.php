@@ -44,16 +44,17 @@
               'email' => $this->input->post('email'),
               'password' => password_hash($this->input->post('password'),PASSWORD_BCRYPT)
             );
-            
-           $success = $this->check_email_exists($new_user['email']);
-            if($success)
+            $allowed = $this->check_if_email_allowed($new_user['email']);
+            //$success = $this->check_email_exists($new_user['email']);
+            if($allowed)
             {
-                return false;
+                $success = $this->db->insert('users',$new_user);
+                return $allowed;
+                
             }
             else
             {
-                $success = $this->db->insert('users',$new_user);
-                return $success;
+                return false;
             }
         }
                 
@@ -67,10 +68,56 @@
             }
             else
             {
+                
                 return false;
             }
             
         }
+        function check_if_email_allowed($email)
+        {
+            //first check if email is in allowed list
+            $this->db->from('allowed_emails');
+            $this->db->where('email',$email);
+            if($this->db->get()->num_rows() > 0)
+            {
+                //check if email is not in use
+                $email_in_use = $this->check_email_exists($email);
+                if($email_in_use)
+                {
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        function get_allowed_mails()
+        {
+            $query = $this->db->get('allowed_emails');
+            return $query->result_array();
+        }
+        function delete_mail($id)
+        {
+            $this->db->delete('allowed_emails', array('id' => $id));
+        }
+        function save_mail($email)
+        {
+            $this->db->insert('allowed_emails', array('email' => $email));
+        }
+        function give_admin($future_admins)
+        {
+            foreach ($future_admins as $user) 
+            {
+                $this->db->set('adminstatus', '1', FALSE);
+                $this->db->where('id', $user);
+                $this->db->update('users');
+            }
+        }
+             
 
     }
 

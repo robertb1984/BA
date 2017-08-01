@@ -57,9 +57,9 @@ function fill_treatment(data)
     var ingredient = document.getElementById("ingredient");
     var dosage =document.getElementById("dosage");
     var times = document.getElementById("times");
-    var taken = document.getElementById('taken_for');
+  //  var taken = document.getElementById('taken_for');
     var count = document.getElementById("treatment_count");
-    var period = document.getElementById('each_period');
+ //   var period = document.getElementById('each_period');
     
     if(object.treatmentID != 0)
     //load elements if selected treatment is "old"
@@ -76,18 +76,18 @@ function fill_treatment(data)
         dosage.value = object.treatment_details[0]['dosage'];
         dosage.readOnly = true;
         
-        times.value = object.treatment_details[0]['for_count'];
+        times.value = object.treatment_details[0]['for_days'];
         times.readOnly = true;
         
-        taken.value = object.treatment_details[0]['for_period'];
-        taken.disabled = true;
+    //    taken.value = object.treatment_details[0]['for_period'];
+    //    taken.disabled = true;
 
         
-        count.value = object.treatment_details[0]['count_each'];
+        count.value = object.treatment_details[0]['count'];
         count.readOnly = true;
         
-        period.value = object.treatment_details[0]['each_period'];
-        period.disabled = true;
+    //    period.value = object.treatment_details[0]['each_period'];
+    //    period.disabled = true;
     }
     else
     //unlock fields to create new treatment
@@ -106,15 +106,15 @@ function fill_treatment(data)
         times.value ='';
         times.readOnly = false;
         
-        taken.selectedIndex = 0;
-        taken.disabled = false;
+    //    taken.selectedIndex = 0;
+    //    taken.disabled = false;
 
         
         count.value = '';
         count.readOnly = false;
         
-        period.selectedIndex = 0;
-        period.disabled = false;
+    //    period.selectedIndex = 0;
+    //    period.disabled = false;
     }
 }
 
@@ -134,11 +134,11 @@ function fill_treatment(data)
             }
             echo form_hidden('loaded_data', isset($load_form_data) ? $load_form_data : false);
             
-            $durationOptions = array(""=>"please select duration","Days"=>"Days","Weeks"=>"Weeks","Months"=>"Months","One time"=>"One Time");
-            $timesOptions = array(""=>"please select","Day"=>"Day","Week"=>"Week","Month"=>"Month","One time"=>"One Time");
+            //$durationOptions = array(""=>"please select duration","Days"=>"Days","Weeks"=>"Weeks","Months"=>"Months","One time"=>"One Time");
+            //$timesOptions = array(""=>"please select","Day"=>"Day","Week"=>"Week","Month"=>"Month","One time"=>"One Time");
             
             echo form_label('select already created treatment : ','treatment');
-            echo form_dropdown('treatment',$dropdown_treatments, set_value('treatment',isset($treatment_selected) ? $treatment_selected : ''),$disabledTreat.' id ="treatment" onChange="get_treatment_details()" ');
+            echo form_dropdown('treatment',$dropdown_treatments, set_value('treatment',isset($treatment_selected) ? $treatment_selected : ''),isset($unlock_choice) ? '' : 'disabled'.' id ="treatment" onChange="get_treatment_details()" ');
             echo "<br/>";
             echo "<br/>";
             echo form_dropdown('ingredient',$dropdown_defined_treatments, set_value('ingredient',isset($treatment_details[0]['id']) ? $treatment_details[0]['id']: '') , $disabledTreat.' id ="ingredient" onChange="get_ingredient()"');
@@ -152,13 +152,14 @@ function fill_treatment(data)
             echo form_input('dosage', set_value('dosage',isset($treatment_details[0]['dosage']) ? $treatment_details[0]['dosage'] : ''),'id=dosage '.$readonlyTreat);
             echo "<br/>";
             echo form_label('Taken for : ','taken_for');
-            echo form_input('times', set_value('times',isset($treatment_details[0]['for_count']) ? $treatment_details[0]['for_count'] : ''),'id=times '.$readonlyTreat);
-            echo form_dropdown('taken_for',$durationOptions, set_value('taken_for',isset($treatment_details[0]['for_period']) ? $treatment_details[0]['for_period'] : ''),'id=taken_for '.$disabledTreat);
+            echo form_input('times', set_value('times',isset($treatment_details[0]['for_days']) ? $treatment_details[0]['for_days'] : ''),'id=times '.$readonlyTreat);
+            echo form_label('days ','taken_for');
+            //echo form_dropdown('taken_for',$durationOptions, set_value('taken_for',isset($treatment_details[0]['for_period']) ? $treatment_details[0]['for_period'] : ''),'id=taken_for '.$disabledTreat);
             echo "<br/>";
             echo form_label('count : ','treatment_count');
-            echo form_input('treatment_count', set_value('treatment_count',isset($treatment_details[0]['count_each']) ? $treatment_details[0]['count_each'] : ''),'id=treatment_count '.$readonlyTreat);
-            echo form_label('times each : ','each_period');
-            echo form_dropdown('each_period',$timesOptions, set_value('each_period',isset($treatment_details[0]['each_period']) ? $treatment_details[0]['each_period'] : ''),'id=each_period '.$disabledTreat);
+            echo form_input('treatment_count', set_value('treatment_count',isset($treatment_details[0]['count']) ? $treatment_details[0]['count'] : ''),'id=treatment_count '.$readonlyTreat);
+            //echo form_label('times each : ','each_period');
+            //echo form_dropdown('each_period',$timesOptions, set_value('each_period',isset($treatment_details[0]['each_period']) ? $treatment_details[0]['each_period'] : ''),'id=each_period '.$disabledTreat);
             echo "<br/>";
             echo form_label('Notes : ','treatment_notes');
             echo form_input('treatment_notes', set_value('treatment_notes',isset($treatment_details[0]['note']) ? $treatment_details[0]['note'] : ''),'id=treatment_notes size = 80 maxlength = 1024 '.$readonlyTreat);

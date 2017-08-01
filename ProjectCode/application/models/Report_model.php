@@ -3,15 +3,18 @@
     {
         public function __construct() {
             $this->load->database();
+            $this->load->helper('date');
         }
         //gets all users
         public function get_myreports($status)
         {
            $user_id =  $this->get_user_id($this->session->email);
            $query= $this->db->query('  
-                SELECT reports.id ,sicknesses.name, sickness_id, user_id, reports.created
+                SELECT reports.id , animals.name as animalname ,animals.isFemale ,sicknesses.name as disease, sickness_id, users.name as username, reports.created,user_id, reports.status
                 FROM reports
                 LEFT JOIN sicknesses ON sicknesses.id = sickness_id
+                LEFT JOIN animals ON animals.id = animal_id
+                LEFT JOIN users ON users.id = user_id
                 WHERE user_id = '.$user_id.' AND status = '.$status);
 
             return $query->result_array();
@@ -19,16 +22,23 @@
         function get_reports($sicknessID)
         {
             $query= $this->db->query('  
-                SELECT reports.id ,sicknesses.name, sickness_id, user_id, reports.created
+                SELECT reports.id , animals.name as animalname ,animals.isFemale ,sicknesses.name as disease, sickness_id, users.name as username, reports.created, species.name as species
                 FROM reports
                 LEFT JOIN sicknesses ON sicknesses.id = sickness_id
-                WHERE sickness_id = '.$sicknessID );
+                LEFT JOIN animals ON animals.id = animal_id
+                LEFT JOIN species on species.id = animals.subspecies_id
+                LEFT JOIN users ON users.id = user_id
+                WHERE sickness_id = '.$sicknessID.'
+                    ORDER BY species.name ');
 
             return $query->result_array();
         }
 
         public function get_sicknesses()
         {
+            $array = array('release_status' => 1, 'creator' => $this->session->userdata('user_id'));
+
+            $query = $this->db->or_where($array);
             $query = $this->db->get('sicknesses');
             return $query->result_array();
         }
@@ -37,8 +47,12 @@
             $query = $this->db->get('animals');
             return $query->result_array();
         }
-        public function get_ingredients()
+        public function get_ingredients($id = null)
         {
+            if($id != null )
+            {
+                $query = $this->db->where('id',$id);
+            }
             $query = $this->db->get('treatments');
             return $query->result_array();
         }
@@ -47,10 +61,18 @@
             $query = $this->db->get('species');
             return $query->result_array();
         }
+
         function load_report_entries($id)
         {
             $query = $this->db->where('id',$id);
             $query = $this->db->get('reports',1);
+            $row = $query->row_array();
+            return $row;
+        }
+        function load_report_closure($id)
+        {
+            $query = $this->db->where('report_id',$id);
+            $query = $this->db->get('reports_closure',1);
             $row = $query->row_array();
             return $row;
         }
@@ -99,7 +121,7 @@
         public function get_details_for_treatment($id)
         {
             $query = $this->db->query('           
-                SELECT treatments_for_sicknesses.id, treatments.id ,dosage, count_each, each_period, for_period, for_count, treatments_details.note ,treatments.name
+                SELECT treatments_for_sicknesses.id, treatments.id ,dosage, for_days, count, treatments_details.note ,treatments.name
                 FROM treatments_for_sicknesses
                 LEFT JOIN sicknesses ON sicknesses.id = sickness_id
                 LEFT JOIN treatments ON treatments.id = treatment_id
@@ -112,21 +134,20 @@
             $this->db->insert($table, $data);
             return $this->db->insert_id();
         }
-        function save_treatment()
+        function save_treatment($species = null)
         {
               
             $this->db->trans_start();
-            
+            $to_insert_species = 0;
             $treatment_id = 0;
             $treatment_for_sickness_id = 0;
-            /* maybe later new ingredient
-            $treatments =
-            array
-            (
-                'name' =>$this->input->post('treatment_name'),
-                'note' => ''
-            );
-             */
+            if(null ===($species))
+            {
+                $to_insert_species = $this->input->post('species');
+            }
+            else {
+                $to_insert_species = $species;
+            }
              
             $treatment_id = $this->input->post('ingredient');
             
@@ -134,7 +155,7 @@
             array(
                 'treatment_id' =>$treatment_id ,
                 'sickness_id' => $this->input->post('sickness'),
-                'subspecies_id' => $this->input->post('species')
+                'subspecies_id' => $to_insert_species
             );
             $treatment_for_sickness_id= $this->save_data($treatments_for_sicknesses, 'treatments_for_sicknesses');;
             
@@ -142,11 +163,11 @@
                 array(
                     'treatments_for_sickness_id' => $treatment_for_sickness_id,
                     'dosage' => $this->input->post('dosage'),
-                    'count_each' => $this->input->post('treatment_count'),
+                    'count' => $this->input->post('treatment_count'),
                     'note' => $this->input->post('treatment_notes'),
-                    'each_period' => $this->input->post('each_period'),
-                    'for_count' => $this->input->post('times'),
-                    'for_period' => $this->input->post('taken_for')
+                   // 'each_period' => $this->input->post('each_period'),
+                   // 'for_count' => $this->input->post('times'),
+                    'for_days' => $this->input->post('times')
                 );
             $this->save_data($treatment_details,'treatments_details');
             
@@ -353,7 +374,7 @@
         function load_visit_fields_results($visit_id)
         {
             $query = $this->db->query('
-                SELECT visit_value_definition.id ,type, visit_value_definition.name , visit_value_definition.description, validation, visit_block.name AS blockname, value
+                SELECT visit_value_definition.id, report_visit_values.id AS report_visit_value_id ,type, visit_value_definition.name , visit_value_definition.description, validation, visit_block.name AS blockname, value
                 FROM visit_value_definition
                 JOIN visit_block ON visit_block.id = block_id
                 LEFT JOIN sickness_value_types ON sickness_value_types.id = visit_value_definition.type_id
@@ -378,7 +399,7 @@
         function load_input_fields_results($id)
         {
             $query = $this->db->query('
-                SELECT sickness_value_definition.id ,type, sickness_value_definition.name , sickness_value_definition.description, validation, sickness_block.name AS blockname, value
+                SELECT sickness_value_definition.id, report_values.id as report_value_id ,type, sickness_value_definition.name , sickness_value_definition.description, validation, sickness_block.name AS blockname, value
                 FROM sickness_value_definition
                 JOIN sickness_block ON sickness_block.id = block_id
                 LEFT JOIN sickness_value_types ON sickness_value_types.id = sickness_value_definition.type_id
@@ -421,7 +442,12 @@
                 'subspecies_id' => $subspecies,
                 //'birthdate' => $this->input->post(''),
                 'name'=> $this->input->post('name'),
-                'isFemale'=> $this->input->post('gender')
+                'isFemale'=> $this->input->post('gender'),
+                'weight' => $this->input->post('weight'),
+                'race' => $this->input->post('race'),
+                'age' => $this->input->post('age'),
+                'time_interval' => $this->input->post('time_interval')
+                    
             );
             $new_animal= $this->save_data($animal, 'animals');
             /*
@@ -552,9 +578,108 @@
        }
        function change_status_of_report($report_id)
        {
-            $this->db->set('status', 'status+1', FALSE);
+            $this->db->set('status', '2', FALSE);
             $this->db->where('id', $report_id);
             $this->db->update('reports');
+       }
+       function change_status_to_closed($report_id)
+       {
+            $this->db->set('status', '3', FALSE);
+            $this->db->where('id', $report_id);
+            $this->db->update('reports');
+       }
+       function save_treatment_ingredient($name = null)
+       {
+           if($name == null)
+           {
+                $this->db->set('note', $this->db->escape($this->input->post('note')), FALSE);
+                $this->db->where('id', $this->input->post('id'));
+                $this->db->update('treatments');
+              
+           }
+           else
+           {
+               $note = $this->input->post('note');
+                $insert = array(
+                    'name' => $this->input->post('name'),
+                    'note' => $note
+                );
+                $this->db->insert('treatments', $insert);
+           }
+       }
+       function close_report($id)
+       {
+           
+            $this->db->trans_start();
+            //insert closing comments to table
+            $closure = array(
+                'report_id' => $id,
+                'closing_comment' => $this->input->post('closing_comment'),
+                'success_rating' => $this->input->post('rating'),
+            );
+            $this->db->insert('reports_closure', $closure);
+            //close report
+            $this->change_status_to_closed($id);
+            
+            $this->db->trans_complete();
+       }
+ //name=sdasd&gender=1&age=3&time_interval=1&weight=1.0000&race=      
+//report_id=8&sickness=12&name=sdasd&gender=1&age=3&time_interval=1&weight=1.0000&race=&dropdownone=9&textthis=dsfsdf¬estwo=sdfsdfs&loaded_data=&treatment=3&ingredient=1&dosage=230+ng%2Fkg×=2&treatment_count=2&treatment_notes=&submit=save+changes
+       function update_animal($animal_id)
+       {
+           $animal= array(
+               'name'=> $this->input->post('name'),
+               'isFemale' => $this->input->post('gender'),
+               'age' => $this->input->post('age'),
+               'time_interval' => $this->input->post('time_interval'),
+               'weight' => $this->input->post('weight'),
+               'race' => $this->input->post('race')
+           );
+           $this->db->where('id', $animal_id);
+           $this->db->update('animals', $animal);
+       }
+       function update_used_treatment($report_id, $new_treatment )
+       {
+            $this->db->set('treatment_for_sickness_id', $new_treatment, FALSE);
+            $this->db->where('id', $report_id);
+            $this->db->update('reports');
+       }
+       function update_sickness_entries($disease_entries_data)
+       {
+           //print_r($disease_entries_data);
+            $this->db->trans_start();
+            foreach($disease_entries_data as $entrie)
+            {
+                $this->db->set('value', $this->db->escape($entrie['value']), FALSE);
+                $this->db->where('id', $entrie['report_value_id']);
+                $this->db->update('report_values');
+            }
+             
+            $this->db->trans_complete();
+       }
+       function update_visit_entries($entries)
+       {
+           //print_r($entries);
+           $this->db->trans_start();
+            foreach($entries as $entrie)
+            {
+                $this->db->set('value', $this->db->escape($entrie['value']), FALSE);
+                $this->db->where('id', $entrie['report_visit_value_id']);
+                $this->db->update('report_visit_values');
+            }
+             
+            $this->db->trans_complete();
+       
+       }
+       function update_closure($report_id )
+       {
+           $closure= array(
+               'closing_comment'=> $this->input->post('closing_comment'),
+               'success_rating' => $this->input->post('rating'),
+               
+           );
+           $this->db->where('report_id', $report_id);
+           $this->db->update('reports_closure', $closure);
        }
         
     }

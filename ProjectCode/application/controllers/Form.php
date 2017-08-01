@@ -5,6 +5,7 @@
         {
             parent::__construct();
             $this->is_authenticated();
+            $this->is_admin();
             $this->load->model('Report_model');
             $this->load->model('Form_model');
            
@@ -107,7 +108,7 @@
                 $form_data['entries']= $entries;
                 $form_data['dropdowns'] = $dropdowns;
             }
-            print_r($form_data);
+            //print_r($form_data);
             $this->load->view('templates/header');
             $this->load->view('form/create');
             if(null!==($this->input->post('preview')))
@@ -141,7 +142,6 @@
                 $this->Form_model->save_this_examination($thisData, $thisDrop);
                 
             }
-            
             
             $thisData = json_encode($thisData);
             echo $thisData;
@@ -200,7 +200,7 @@
         function create_new_examination()
         {
             $variable = $this->input->raw_input_stream;
-            print_r($variable);
+            //print_r($variable);
             $form_data['result']=0 ;
             $form_data['this_defines'] ='examination' ; 
             $form_data['this_count'] = 0;
@@ -281,7 +281,7 @@
                 $form_data['entries']= $entries;
                 $form_data['dropdowns'] = $dropdowns;
             }
-            print_r($form_data);
+            //print_r($form_data);
             $this->load->view('templates/header');
             $this->load->view('form/define_visits_new');
             if(null!==($this->input->post('preview')))
