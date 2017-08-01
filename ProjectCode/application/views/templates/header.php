@@ -26,7 +26,7 @@
                         <?php if($this->session->userdata('is_auth')) 
                             {  ?>
                             <li><a href="<?php echo base_url(); ?>reports">My cases</a></li>
-                            <li><a href="<?php echo base_url(); ?>report_search">Reprocase Search</a></li>
+                            <li><a href="<?php echo base_url(); ?>report_search">Reprocase search</a></li>
                             <li><a href="<?php echo base_url(); ?>login"><?php
                             //switch between strings "logout/login" rest is controlled in the Login controller
                                                                                 $isAuth = FALSE;
@@ -51,12 +51,14 @@
                                 <ul class="dropdown-menu">
                                     <li class="dropdown-header"> -----User management-----</li>
                                     <li><a href="<?php echo base_url(); ?>users">Users</a></li>
-                                    <li><a href="<?php echo base_url(); ?>add_email">Add allowed E-mail</a></li>
-                                    <li class="dropdown-header"> ---------create document-------</li>
-                                    <li><a href="<?php echo base_url(); ?>create_form">create disease form</a></li>
-                                    <li><a href="<?php echo base_url(); ?>create_visits">create examination form</a></li>
-                                    <li class="dropdown-header"> --------treatments----------</li>
-                                    <li><a href="<?php echo base_url(); ?>treatments">treatments</a></li> 
+                                    <li><a href="<?php echo base_url(); ?>add_email">Add allowed E-Mail</a></li>
+                                    <li class="dropdown-header"> ---------Create document-------</li>
+                                    <li><a href="<?php echo base_url(); ?>create_form">Create disease form</a></li>
+                                    <li><a href="<?php echo base_url(); ?>create_visits">Create examination form</a></li>
+                                    <li><a href="<?php echo base_url(); ?>release_form">Release one of your forms</a></li>
+                                    <li class="dropdown-header"> --------Diverse----------</li>
+                                    <li><a href="<?php echo base_url(); ?>treatments">Treatments</a></li>
+                                    <li><a href="<?php echo base_url(); ?>species">Add species</a></li> 
                                 </ul>
                             </li>
                             

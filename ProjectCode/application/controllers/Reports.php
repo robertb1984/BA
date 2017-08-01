@@ -22,7 +22,7 @@
         public function overview()
         {
             
-            $data['title']= 'My created Cases';
+            $data['title']= 'My created cases';
             $data['status'] = 1;
             $data['myreports']= $this->Report_model->get_myreports($data['status']);
             $running_cases = $this->Report_model->get_myreports('2');
@@ -33,7 +33,7 @@
             $running['status'] = 2;
             $running['myreports']= $this->Report_model->get_myreports($running['status']);
             */
-            $closed['title']= 'My closed Cases';
+            $closed['title']= 'My closed cases';
             $closed['status'] = 3;
             $closed['myreports']= $this->Report_model->get_myreports($closed['status']);
             //print_r($data['users']);
@@ -107,6 +107,7 @@
             $data['ingredients'] =  $this->Report_model->get_ingredients();
             $data['dropdown_defined_treatments'] = $this->dropdownData($data['ingredients'], 'name', 'Ingredient/Treatment');
             $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
+            $data['unlock_choice'] = '';
             //$site = $this->Report_model->get_sickness_name($sicknessID);
             //$site = str_replace(' ', '_', $site);
             //$form_function['form_function'] = 'create_'.$site;
@@ -270,6 +271,7 @@
                 redirect('/reports');
             }
         }
+        /*
         function create_induction_of_ovulation()
         {
             $this->load->library('form_validation');
@@ -376,20 +378,20 @@
             }
             
         }
-        
+        */
         function load_report($id)
         {
             $sickness_id = $this->Report_model->get_sickness_id($id);
-            if (($sickness_id >= 3)&&($sickness_id <= 5))
+          /*  if (($sickness_id >= 3)&&($sickness_id <= 5))
             {
                 $this->load_report_old($id);
             }
             else
-            {
-                $this->load_report_new($id);
-            }
+            {*/
+            $this->load_report_new($id);
+            //}
         }
-        
+        /*
         function load_report_old($id)
         {
             $load_document = true;
@@ -421,6 +423,8 @@
             $this->load->view('reports/treatment',$data);
             $this->load->view('templates/footer');
         }
+         
+         */
         //new load function for EAV design
         function load_report_new($id)
         {
@@ -496,6 +500,12 @@
             }
             $this->load->view('templates/footer');
         }
+        //---------------------------Refaktoring ------------------------------
+        //-----------moving of prepare logic out of horror method--------------
+        function prepare_view_animal()
+        {
+            
+        }
         //---------------------------------------------------------------------
         //--------------------------calls to load_edit_report------------------
         
@@ -514,7 +524,7 @@
         //$id is always the id of the report
         //$add_visit if true you will be able to "append" a examination
         //$close_report if true the user can add his closing comments and is closing it after.
-        //$lock_document used in all loaded data fields for locking the fields.
+        //
         function load_edit_report($id , $add_visit = null, $close_report = null, $edit = null)
         {
             $lock_document = false;
@@ -836,7 +846,7 @@
                 
                 //update animal
                 $this->Report_model->update_animal($report_data['animal_id']);
-                //a treatment can only be created new so it sees no change in other cases
+                //a treatment can not be edited, otherwise it would be possible to change it for another report
                 
                 if($new_treatment == 0)
                 {
@@ -893,6 +903,35 @@
             $this->is_owner($report_data['user_id']);
             return $report_data;
             
+        }
+        function show_cases_for_form($form_id)
+        {
+            $data['title']= 'My created Cases';
+            $data['status'] = 1;
+            $data['myreports']= $this->Report_model->get_myreports_specific_sickness($data['status'],$form_id);
+            $running_cases = $this->Report_model->get_myreports_specific_sickness('2', $form_id);
+            $data['myreports'] = array_merge($data['myreports'], $running_cases);
+            //print_r($running_cases);
+        /*
+            $running['title']= 'My not closed Reports';
+            $running['status'] = 2;
+            $running['myreports']= $this->Report_model->get_myreports($running['status']);
+            */
+            $closed['title']= 'My closed Cases';
+            $closed['status'] = 3;
+            $closed['myreports']= $this->Report_model->get_myreports_specific_sickness($closed['status'], $form_id);
+            //print_r($data['users']);
+            //$this->load->helper('url'); 
+            $this->load->view('templates/header');
+            //php block
+            //just created reports
+            $this->load->view('reports/myreports',$data);
+            //not closed still running rports
+            //$this->load->view('reports/myreports',$running);
+            //My closed Reports
+            $this->load->view('reports/myreports',$closed);
+            
+            $this->load->view('templates/footer');
         }
 
     }

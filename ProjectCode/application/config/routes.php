@@ -55,7 +55,9 @@ $route['login'] = 'Login/index';
 $route['users'] = 'Users/index';
 $route['add_email'] = 'Users/show_emails';
 $route['create_form'] = 'Form/create_new';
+$route['release_form'] = 'Form/my_non_released';
 $route['treatments'] = 'Reports/treatments';
+$route['species'] = 'Animals/overview';
 
 $route['create_visits'] = 'Form/select_disease_form';
 $route['report_search'] = 'Reports/report_search';

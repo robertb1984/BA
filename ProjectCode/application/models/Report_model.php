@@ -19,6 +19,20 @@
 
             return $query->result_array();
         }
+        public function get_myreports_specific_sickness($status, $sickness_id)
+        {
+           $user_id =  $this->get_user_id($this->session->email);
+           $query= $this->db->query('  
+                SELECT reports.id , animals.name as animalname ,animals.isFemale ,sicknesses.name as disease, sickness_id, users.name as username, reports.created,user_id, reports.status
+                FROM reports
+                LEFT JOIN sicknesses ON sicknesses.id = sickness_id
+                LEFT JOIN animals ON animals.id = animal_id
+                LEFT JOIN users ON users.id = user_id
+                WHERE user_id = '.$user_id.' AND status = '.$status.' AND sicknesses.id = '.$sickness_id.'
+                  ;' );
+
+            return $query->result_array();
+        }
         function get_reports($sicknessID)
         {
             $query= $this->db->query('  

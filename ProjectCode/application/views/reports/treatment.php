@@ -138,7 +138,7 @@ function fill_treatment(data)
             //$timesOptions = array(""=>"please select","Day"=>"Day","Week"=>"Week","Month"=>"Month","One time"=>"One Time");
             
             echo form_label('select already created treatment : ','treatment');
-            echo form_dropdown('treatment',$dropdown_treatments, set_value('treatment',isset($treatment_selected) ? $treatment_selected : ''),isset($unlock_choice) ? '' : 'disabled'.' id ="treatment" onChange="get_treatment_details()" ');
+            echo form_dropdown('treatment',$dropdown_treatments, set_value('treatment',isset($treatment_selected) ? $treatment_selected : ''),isset($unlock_choice) ? ' id ="treatment" onChange="get_treatment_details()"  ' : 'disabled'.' id ="treatment" onChange="get_treatment_details()" ');
             echo "<br/>";
             echo "<br/>";
             echo form_dropdown('ingredient',$dropdown_defined_treatments, set_value('ingredient',isset($treatment_details[0]['id']) ? $treatment_details[0]['id']: '') , $disabledTreat.' id ="ingredient" onChange="get_ingredient()"');

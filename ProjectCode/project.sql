@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2017-07-05 04:03:45
+Date: 2017-07-17 17:42:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `animals` (
   PRIMARY KEY (`id`),
   KEY `FK_animals_subspecies` (`subspecies_id`),
   CONSTRAINT `FK_animals_subspecies` FOREIGN KEY (`subspecies_id`) REFERENCES `species` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of animals
@@ -62,10 +62,14 @@ INSERT INTO `animals` VALUES ('31', '1', '2017-06-27 02:14:34', 'sasd', '1', '0.
 INSERT INTO `animals` VALUES ('32', '1', '2017-06-27 02:16:24', 'Dasda', '1', '0.0000', '', '2', null);
 INSERT INTO `animals` VALUES ('33', '1', '2017-06-27 02:17:55', 'sadsdas', '0', '0.0000', '', '3', '2');
 INSERT INTO `animals` VALUES ('34', '1', '2017-07-03 02:01:28', 'sdasd', '1', '1.0000', '', '3', '1');
-INSERT INTO `animals` VALUES ('35', '1', '2017-07-03 02:14:50', '', '0', '0.0000', '', '3', '2');
+INSERT INTO `animals` VALUES ('35', '1', '2017-07-03 02:14:50', 'test5', '0', '0.0000', '', '3', '2');
 INSERT INTO `animals` VALUES ('36', '1', '2017-07-03 02:15:28', 'testTHIS', '1', '0.0000', '', '2', '1');
 INSERT INTO `animals` VALUES ('37', '1', '2017-07-03 02:20:11', 'thisisTHEtest', '0', '0.0000', 'race', '3', '2');
 INSERT INTO `animals` VALUES ('38', '1', '2017-07-03 02:25:34', 'test', '0', '0.0000', '', '2', '1');
+INSERT INTO `animals` VALUES ('39', '0', '2017-07-07 03:43:25', 'john', '0', '3.0000', '', '3', '1');
+INSERT INTO `animals` VALUES ('40', '0', '2017-07-07 04:19:13', 'dasd', '0', '3.0000', '', '3', '1');
+INSERT INTO `animals` VALUES ('41', '0', '2017-07-07 04:20:00', 'test3', '0', '3.0000', '', '2', '2');
+INSERT INTO `animals` VALUES ('42', '0', '2017-07-08 03:05:14', 'testing', '0', '2.0000', '', '34', '3');
 
 -- ----------------------------
 -- Table structure for `cryptorchidism`
@@ -184,7 +188,7 @@ CREATE TABLE `reports` (
   CONSTRAINT `FK_reports_sicknesses` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_reports_used_treatment` FOREIGN KEY (`treatment_for_sickness_id`) REFERENCES `treatments_for_sicknesses` (`id`),
   CONSTRAINT `FK_reports_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of reports
@@ -195,12 +199,13 @@ INSERT INTO `reports` VALUES ('3', '12', '21', '2017-06-27 00:09:49', '3', '29',
 INSERT INTO `reports` VALUES ('4', '10', '21', '2017-06-27 02:11:23', '2', '30', '1');
 INSERT INTO `reports` VALUES ('5', '10', '21', '2017-06-27 02:14:34', '2', '31', '1');
 INSERT INTO `reports` VALUES ('6', '11', '21', '2017-06-27 02:16:24', '4', '32', '1');
-INSERT INTO `reports` VALUES ('7', '11', '21', '2017-06-27 02:17:55', '4', '33', '1');
+INSERT INTO `reports` VALUES ('7', '11', '21', '2017-06-27 02:17:55', '9', '33', '1');
 INSERT INTO `reports` VALUES ('8', '12', '21', '2017-07-03 02:01:28', '3', '34', '1');
 INSERT INTO `reports` VALUES ('9', '12', '21', '2017-07-03 02:14:50', '8', '35', '2');
 INSERT INTO `reports` VALUES ('10', '12', '21', '2017-07-03 02:15:28', '8', '36', '2');
 INSERT INTO `reports` VALUES ('11', '11', '21', '2017-07-03 02:20:11', '9', '37', '2');
 INSERT INTO `reports` VALUES ('12', '12', '21', '2017-07-03 02:25:34', '7', '38', '1');
+INSERT INTO `reports` VALUES ('13', '14', '21', '2017-07-08 03:05:14', '13', '42', '1');
 
 -- ----------------------------
 -- Table structure for `reports_closure`
@@ -232,7 +237,7 @@ CREATE TABLE `report_values` (
   `value` varchar(50) NOT NULL,
   `value_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of report_values
@@ -256,7 +261,7 @@ INSERT INTO `report_values` VALUES ('16', '5', 'sada', '13');
 INSERT INTO `report_values` VALUES ('17', '5', '3', '14');
 INSERT INTO `report_values` VALUES ('18', '5', 'dasdasd', '15');
 INSERT INTO `report_values` VALUES ('19', '6', '6', '16');
-INSERT INTO `report_values` VALUES ('20', '7', '6', '16');
+INSERT INTO `report_values` VALUES ('20', '7', '5', '16');
 INSERT INTO `report_values` VALUES ('21', '8', '9', '17');
 INSERT INTO `report_values` VALUES ('22', '8', 'dsfsdf', '18');
 INSERT INTO `report_values` VALUES ('23', '8', 'sdfsdfs', '19');
@@ -270,6 +275,11 @@ INSERT INTO `report_values` VALUES ('30', '11', '0', '16');
 INSERT INTO `report_values` VALUES ('31', '12', '9', '17');
 INSERT INTO `report_values` VALUES ('32', '12', '2223', '18');
 INSERT INTO `report_values` VALUES ('33', '12', '2', '19');
+INSERT INTO `report_values` VALUES ('34', '13', '3', '20');
+INSERT INTO `report_values` VALUES ('35', '14', '2', '20');
+INSERT INTO `report_values` VALUES ('36', '15', '2', '20');
+INSERT INTO `report_values` VALUES ('37', '13', '2', '21');
+INSERT INTO `report_values` VALUES ('38', '13', '3333', '22');
 
 -- ----------------------------
 -- Table structure for `report_visits`
@@ -336,7 +346,7 @@ CREATE TABLE `sicknesses` (
   PRIMARY KEY (`id`),
   KEY `FK_sicknesses_users` (`creator`),
   CONSTRAINT `FK_sicknesses_users` FOREIGN KEY (`creator`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sicknesses
@@ -344,7 +354,8 @@ CREATE TABLE `sicknesses` (
 INSERT INTO `sicknesses` VALUES ('10', 'Test2', 'this is a boring test', '21', '1');
 INSERT INTO `sicknesses` VALUES ('11', 'test3', 'droptest', '21', '1');
 INSERT INTO `sicknesses` VALUES ('12', 'Droptest', 'A test for droptest', '21', '1');
-INSERT INTO `sicknesses` VALUES ('13', 'sasda', 'dddd', '21', '0');
+INSERT INTO `sicknesses` VALUES ('13', 'sasda', 'dddd', '21', '1');
+INSERT INTO `sicknesses` VALUES ('14', 'another Test', 'testing', '21', '0');
 
 -- ----------------------------
 -- Table structure for `sickness_block`
@@ -357,7 +368,7 @@ CREATE TABLE `sickness_block` (
   PRIMARY KEY (`id`),
   KEY `FK_block_sickness` (`sickness_id`),
   CONSTRAINT `FK_block_sickness` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sickness_block
@@ -368,6 +379,7 @@ INSERT INTO `sickness_block` VALUES ('6', '11', 'dda');
 INSERT INTO `sickness_block` VALUES ('7', '12', 'Droptest');
 INSERT INTO `sickness_block` VALUES ('8', '12', 'textblock');
 INSERT INTO `sickness_block` VALUES ('9', '13', 'testz');
+INSERT INTO `sickness_block` VALUES ('10', '14', 'Left side');
 
 -- ----------------------------
 -- Table structure for `sickness_value_definition`
@@ -385,7 +397,7 @@ CREATE TABLE `sickness_value_definition` (
   KEY `FK_value_block` (`block_id`),
   CONSTRAINT `FK_value_block` FOREIGN KEY (`block_id`) REFERENCES `sickness_block` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_vd_type` FOREIGN KEY (`type_id`) REFERENCES `sickness_value_types` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sickness_value_definition
@@ -399,6 +411,8 @@ INSERT INTO `sickness_value_definition` VALUES ('17', '7', '2', 'dropdownone', '
 INSERT INTO `sickness_value_definition` VALUES ('18', '8', '1', 'textthis', 'enter notes', 'trim');
 INSERT INTO `sickness_value_definition` VALUES ('19', '8', '1', 'notestwo', 'notes 2', 'trim');
 INSERT INTO `sickness_value_definition` VALUES ('20', '9', '1', 'dddd', 'please enter number', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('21', '10', '1', 'left_length', 'please enter number: ', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('22', '10', '1', 'note', 'please enter text : ', 'trim');
 
 -- ----------------------------
 -- Table structure for `sickness_value_dropdown_values`
@@ -454,6 +468,7 @@ CREATE TABLE `species` (
 -- ----------------------------
 -- Records of species
 -- ----------------------------
+INSERT INTO `species` VALUES ('0', 'Hamster', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `species` VALUES ('1', 'Dog', '2017-03-20 16:33:45', '2017-03-20 16:33:49');
 
 -- ----------------------------
@@ -535,7 +550,7 @@ CREATE TABLE `treatments_details` (
   PRIMARY KEY (`id`),
   KEY `FK_td_treatments_for_sicknesses` (`treatments_for_sickness_id`),
   CONSTRAINT `FK_td_treatments_for_sicknesses` FOREIGN KEY (`treatments_for_sickness_id`) REFERENCES `treatments_for_sicknesses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of treatments_details
@@ -546,6 +561,10 @@ INSERT INTO `treatments_details` VALUES ('3', '4', '230 ng/kg', '2', '', '2');
 INSERT INTO `treatments_details` VALUES ('4', '7', '220ng', '2', '', '200');
 INSERT INTO `treatments_details` VALUES ('5', '8', 'none', '4', '', '3');
 INSERT INTO `treatments_details` VALUES ('6', '9', 'none', '2', '', '100');
+INSERT INTO `treatments_details` VALUES ('7', '10', 'none', '2', '', '2');
+INSERT INTO `treatments_details` VALUES ('8', '11', 'none', '2', '', '2');
+INSERT INTO `treatments_details` VALUES ('9', '12', '2', '10', '', '3');
+INSERT INTO `treatments_details` VALUES ('10', '13', '230 ng/kg', '2', '', '30');
 
 -- ----------------------------
 -- Table structure for `treatments_for_sicknesses`
@@ -565,7 +584,7 @@ CREATE TABLE `treatments_for_sicknesses` (
   CONSTRAINT `FK_tfs_sickness` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_tfs_subspecies` FOREIGN KEY (`subspecies_id`) REFERENCES `species` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_tfs_treatments` FOREIGN KEY (`treatment_id`) REFERENCES `treatments` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of treatments_for_sicknesses
@@ -576,6 +595,10 @@ INSERT INTO `treatments_for_sicknesses` VALUES ('4', '1', '11', '1', null, null)
 INSERT INTO `treatments_for_sicknesses` VALUES ('7', '1', '12', '1', null, null);
 INSERT INTO `treatments_for_sicknesses` VALUES ('8', '9', '12', '1', null, null);
 INSERT INTO `treatments_for_sicknesses` VALUES ('9', '9', '11', '1', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('10', '9', '13', '0', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('11', '9', '13', '0', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('12', '8', '13', '0', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('13', '1', '14', '0', null, null);
 
 -- ----------------------------
 -- Table structure for `users`
@@ -611,7 +634,7 @@ CREATE TABLE `visit_block` (
   PRIMARY KEY (`id`),
   KEY `FK_block_sickness` (`sickness_id`),
   CONSTRAINT `visit_block_ibfk_1` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of visit_block
@@ -621,6 +644,7 @@ INSERT INTO `visit_block` VALUES ('5', '10', 'Block 1', '1');
 INSERT INTO `visit_block` VALUES ('6', '10', 'Block2', '1');
 INSERT INTO `visit_block` VALUES ('12', '11', 'dda', '1');
 INSERT INTO `visit_block` VALUES ('14', '12', 'sadas', '1');
+INSERT INTO `visit_block` VALUES ('15', '14', 'Left side', '1');
 
 -- ----------------------------
 -- Table structure for `visit_value_definition`
@@ -637,7 +661,7 @@ CREATE TABLE `visit_value_definition` (
   KEY `FK_vd_type` (`type_id`),
   KEY `FK_value_block` (`block_id`),
   CONSTRAINT `FK_def_block` FOREIGN KEY (`block_id`) REFERENCES `visit_block` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of visit_value_definition
@@ -651,6 +675,8 @@ INSERT INTO `visit_value_definition` VALUES ('6', '6', '1', 'text2', 'please ent
 INSERT INTO `visit_value_definition` VALUES ('13', '12', '2', 'ssaaad', '', 'trim');
 INSERT INTO `visit_value_definition` VALUES ('15', '14', '1', 'aaassss', 'please enter text:', 'trim|required|numeric');
 INSERT INTO `visit_value_definition` VALUES ('16', '14', '1', 'asasdasdasdasd', 'please enter text2:', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('17', '15', '1', 'left_length', 'please enter number: ', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('18', '15', '1', 'note', 'please enter text : ', 'trim');
 
 -- ----------------------------
 -- Table structure for `visit_value_dropdown_values`

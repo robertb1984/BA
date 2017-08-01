@@ -224,4 +224,29 @@
             $query = $this->db->get('sickness_block');
             return $query->result_array();
         }
+        function get_my_non_released($user_id)
+        {
+              $query = $this->db->query('
+                SELECT sicknesses.id as id, name , IFNULL(used_count, 0 ) as used_count
+                FROM sicknesses
+                LEFT JOIN (
+                    SELECT sickness_id , Count(id) as used_count
+                    FROM reports
+                    GROUP BY sickness_id)used_count
+                    ON used_count.sickness_id = sicknesses.id
+                WHERE (release_status = 0 && creator = '.$user_id.')
+                 ;');
+            return $query->result_array();
+        }
+        function delete_testreports($sickness_id)
+        {
+            $this->db->where('sickness_id', $sickness_id);
+            $this->db->delete('reports');
+        }
+        function release_form($form_id)
+        {
+            $this->db->set('release_status', '1', FALSE);
+            $this->db->where('id', $form_id);
+            $this->db->update('sicknesses');
+        }
  }

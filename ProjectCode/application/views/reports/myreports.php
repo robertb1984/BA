@@ -1,4 +1,4 @@
-<?php if($status == 1) echo anchor('Reports/new_report','new case') ?>
+<?php if($status == 1) echo anchor('Reports/new_report','New case') ?>
 
 <h5><?php echo $title ?></h5>
 <style>
@@ -24,15 +24,21 @@ tr:nth-child(even) {
     <th>Animalname</th>
     <th>Gender</th>
     <th>Disease/Case</th>
-    <th>By User</th>
-    <th>created at </th>
-    <th> view  </th>
-    <th> edit </th>
-    <?php if($myreports[0]['status'] != 3)
-    { ?>
-    <th> add examination </th>
-    <th> Close Case</th>
-    <?php } ?>
+    <th>By user</th>
+    <th>Created at </th>
+    <th> View  </th>
+    <th> Edit </th>
+    <?php
+    //print_r($myreports);
+    if(!empty($myreports))
+    {
+        if($myreports[0]['status'] != 3)
+        { ?>
+        <th> add examination </th>
+        <th> Close case</th>
+        <?php
+        }
+    }    ?>
   </tr>
 <?php foreach($myreports as $report) :
   $button= array(
@@ -46,10 +52,10 @@ tr:nth-child(even) {
         <th><?php echo $report['disease']; ?></th>
         <th><?php echo $report['username']; ?></th>
         <th><?php echo $report['created']; ?></th>
-        <th><a class="btn-default" href="Reports/load_report/<?php echo $report['id']; ?>">view details</a></th>
-        <th><?php if($report['user_id'] == $this->session->userdata('user_id')){ ?><a class="btn-default" href="Reports/edit_report/<?php echo $report['id']; ?>">edit</a><?php } ?></th>
-        <th><?php if(($report['user_id'] == $this->session->userdata('user_id')&&($report['status']!= 3))){ ?><a class="btn-default" href="Reports/load_edit_report/<?php echo $report['id']; ?>/<?php echo true; ?>">add examination</a><?php } ?></th>
-        <th><?php if($report['status'] == 2){ ?><a class="btn-default" href="Reports/close_report/<?php echo $report['id']; ?>">close <?php }?></th> 
+        <th><a class="btn-default" href="<?php echo base_url()?>Reports/load_report/<?php echo $report['id']; ?>">view details</a></th>
+        <th><?php if($report['user_id'] == $this->session->userdata('user_id')){ ?><a class="btn-default" href="<?php echo base_url()?>Reports/edit_report/<?php echo $report['id']; ?>">edit</a><?php } ?></th>
+        <th><?php if(($report['user_id'] == $this->session->userdata('user_id')&&($report['status']!= 3))){ ?><a class="btn-default" href="<?php echo base_url()?>Reports/load_edit_report/<?php echo $report['id']; ?>/<?php echo true; ?>">add examination</a><?php } ?></th>
+        <th><?php if($report['status'] == 2){ ?><a class="btn-default" href="<?php echo base_url()?>Reports/close_report/<?php echo $report['id']; ?>">close <?php }?></th> 
     </tr>
 
 <?php endforeach; ?>

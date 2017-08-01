@@ -196,7 +196,7 @@ else
     <strong id="var_name" name="var_name">Variable</strong>
     <input type="text" name="var" />
     <input type="hidden" name="rank" value="0" />
-    <input type="button" value="X" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" />
+    
     
 </div>
 <div id="dropdown" style="display: none">

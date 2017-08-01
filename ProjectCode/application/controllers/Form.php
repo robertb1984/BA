@@ -276,7 +276,8 @@
                         
                     }
                 }
-                
+                $form_data['edit'] = null;
+                $form_data['new_visit'] = false;
                 $form_data['sickness'] = $sickness;
                 $form_data['entries']= $entries;
                 $form_data['dropdowns'] = $dropdowns;
@@ -291,6 +292,22 @@
                 $this->load->view('form/save_newform',$form_data);
             }
             $this->load->view('templates/footer');
+        }
+        function my_non_released()
+        {
+            $data['title']= 'Created unreleased forms by me';
+            $data['forms']= $this->Form_model->get_my_non_released($this->session->userdata('user_id'));
+            //print_r($data['users']);
+            //$this->load->helper('url'); 
+            $this->load->view('templates/header');
+            $this->load->view('form/non_released',$data);
+            $this->load->view('templates/footer');
+        }
+        function release_form($form_id)
+        {
+            $this->Form_model->delete_testreports($form_id);
+            $this->Form_model->release_form($form_id);
+            redirect('release_form');
         }
 
 

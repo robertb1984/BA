@@ -20,7 +20,7 @@
         //echo form_label('NEW VISIT','',$attributesGroup );
         echo form_label('examination '.$this_count,'',$attributesGroup );
     }
-    elseif(!(null===$edit) ) {
+    elseif(!(null===(isset($edit)? $edit : '')) ) {
         echo form_label('examination '.$this_count,'',$attributesGroup );
     }
     else {
