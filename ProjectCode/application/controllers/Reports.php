@@ -117,7 +117,7 @@
                     $form_data['dropdowns'][$value['name']]= $this->dropdownData($form_data[$value['name']], 'text', $value['description']); 
                 }
             }
-            print_r( $form_data);
+            //print_r( $form_data);
             //direct to form
             $this->load->view('templates/header');
             $this->load->view('reports/form_open',$form_function);
@@ -194,7 +194,6 @@
             }
             else
             {
-                
                 //save new treatment
                 if($new_treatment == 0)
                 {        
@@ -247,7 +246,6 @@
             if($this->form_validation->run() === FALSE)
             {
                 $this->new_generate_form();
-                 
             }
             else
             {
@@ -458,6 +456,7 @@
             $data['ingredientID']= $ingredient;
             $data['note']= $note= $this->Report_model->get_ingredient_description($ingredient);
             $result = json_encode($data);
+            //print_r($result);
             echo $result;
         }
         //for JS 

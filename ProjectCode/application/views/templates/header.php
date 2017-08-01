@@ -41,7 +41,7 @@
                    <div id="navbar">
                     <ul class="nav navbar-nav">
                         <li><a href="<?php echo base_url(); ?>users">Users</a></li>
-           
+                        <li><a href="<?php echo base_url(); ?>create_form">create disease form</a></li>   
                     </ul>
                     </div>
             </div>

@@ -53,9 +53,10 @@ $route['logout'] = 'Login/logout';
 $route['reports'] = 'Reports/overview';
 $route['login'] = 'Login/index';
 $route['users'] = 'Users/index';
+$route['create_form'] = 'Form/create_new';
 $route['report_search'] = 'Reports/report_search';
 $route['default_controller'] = 'Pages/view';
 
-$route['(:any)']= 'pages/view/$1';
+//$route['(:any)']= 'pages/view/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -3,20 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/myreports.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/cystic_ovarian_disease.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/newreport.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/form/create.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/treatment.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/form/save_newform.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/new_cryptorchidism.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/controllers/Reports.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/config/routes.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/views/login/login.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/search_reports_results.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/controllers/Login.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/controllers/Form.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/models/Report_model.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/controllers/Animals.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/templates/header.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/form_submit.php</file>
             <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/sickness.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/controllers/Welcome.php</file>
-            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/reports/report_search.php</file>
+            <file>file:/C:/xampp/htdocs/ProjectCode/application/views/login/signup.php</file>
         </group>
     </open-files>
 </project-private>

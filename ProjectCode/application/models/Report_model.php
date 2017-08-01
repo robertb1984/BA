@@ -394,6 +394,73 @@
              }
              $this->db->trans_complete();
         }
-       
+       function save_this_form($data ,$drop)
+       {
+           $blockname = '/%'; 
+           $inserted_block_id = 0;
+           //$inserted_sickness_id = 0;
+           $last_value = 0;
+           
+            $this->db->trans_start();
+            $insert_sickenss = array(
+                'name' => $data[0]['sickness']['Name'],
+                'description' => $data[0]['sickness']['description']
+            );
+            
+            $inserted_sickness_id = $this->save_data($insert_sickenss, 'sicknesses');
+           //Create new sickness
+           foreach($data as $entrie)
+           {
+               //check for new Block
+               if($entrie['blockname'] != $blockname)
+               {
+                   $blockname = $entrie['blockname'];
+                   $new_block = array(
+                        'name' => $entrie['blockname'],
+                        'sickness_id' => $inserted_sickness_id
+                   );
+                   $inserted_block_id = $this->save_data( $new_block,'sickness_block');
+                   
+                }
+                //select the right type_id. Divide between number/text for possible future development
+                $type_id = 0;
+                switch($entrie['type'])
+                {
+                    case 'text':
+                        $type_id=1;
+                        break;
+                    case 'number':
+                        $type_id=1;
+                        break;
+                    case 'drop':
+                        $type_id=2;
+                        break;
+                }        
+               //insert entrie into 
+               //{"id":2,"block_id":2,"type":"text","name":"daasssa","description":"please enter text","validation":"trim|required|numeric","blockname":"fffddd"}]
+               $new_value = array(
+                   'block_id' => $inserted_block_id,
+                   'type_id' => $type_id,
+                   'name' => $entrie['name'],
+                   'description' => $entrie['description'],
+                   'validation' => $entrie['validation']
+                      
+               );
+               //$this->db->insert('sickness_value_definition', $new_value);
+               $last_value = $this->save_data($new_value,'sickness_value_definition');
+               if( $type_id == 2)
+               {
+                   foreach($drop[$entrie['name']] as $dropnames)
+                   {
+                        $new_drop = array(
+                            'value_id' => $last_value,
+                            'text' => $dropnames
+                        );
+                        $this->save_data($new_drop,'sickness_value_dropdown_values');
+                   }
+               }
+           }
+           $this->db->trans_complete();
+       }
         
     }

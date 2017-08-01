@@ -83,7 +83,7 @@
                $createmember = $this->user_model->create_user();
                if($createmember)
                {
-                   $page ='home';
+                    $page ='home';
                     $this->load->view('templates/header');
                     $this->load->view('pages/'.$page);
                     $this->load->view('templates/footer');
