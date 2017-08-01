@@ -28,6 +28,7 @@ tr:nth-child(even) {
     <th>By User ID</th>
     <th>created at </th>
     <th> view  </th>
+    <th> add Visit </th>
   </tr>
 <?php foreach($myreports as $report) :
   $button= array(
@@ -42,6 +43,7 @@ tr:nth-child(even) {
         <th><?php echo $report['user_id']; ?></th>
         <th><?php echo $report['created']; ?></th>
         <th><a class="btn-default" href="Reports/load_report/<?php echo $report['id']; ?>">view details</a></th>
+        <th><?php if($report['user_id'] == $this->session->userdata('user_id')){ ?><a class="btn-default" href="Reports/load_edit_report/<?php echo $report['id']; ?>/<?php echo true; ?>">add visit</a><?php } ?></th>
     </tr>
 
 <?php endforeach; ?>

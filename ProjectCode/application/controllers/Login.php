@@ -40,11 +40,12 @@
                           'email' =>$this->input->post('email'),
                           'is_auth' => true,
                           'is_admin' => $validated['is_admin'],
-                          'name'=> $validated['name']
+                          'name'=> $validated['name'],
+                          'user_id' => $validated['user_id']
                       );
                 $this->session->set_userdata($userdata);
                 //toDo change to "myReports"
-                redirect('/users');
+                redirect('/reports');
             }
             else {
                 echo "<script> alert('No user found'); </script>";
@@ -100,7 +101,7 @@
         function logout()
         {
   
-            $userdata = array('email','is_auth','is_admin','name');
+            $userdata = array('email','is_auth','is_admin','name','user_id');
             $this->session->unset_userdata($userdata);
             redirect('users');
         }

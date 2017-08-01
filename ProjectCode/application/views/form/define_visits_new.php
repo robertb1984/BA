@@ -104,14 +104,8 @@ function add_entrie(type)
 <?php
 
 $openBlock =  false;
-echo form_open('Form/create_new');
-echo form_label('Please Enter Name of the Form : ' , 'sickness_name' );
-//echo form_input($entrie['name'], set_value($entrie['name']));
-echo form_input('sickness_name' , set_value('sickness_name' ,isset($sickness['Name']) ? $sickness['Name'] : ''));
+echo form_open('Form/create_new_examination');
 
-echo form_label('Please Enter short description : ' , 'sickness_desc' );
-//echo form_input($entrie['name'], set_value($entrie['name']));
-echo form_input('sickness_desc' , set_value('sickness_desc' ,isset($sickness['Description']) ? $sickness['Description'] : ''));
 echo "<br/>";
 //echo form_open('form/create_form');
 $variable = $this->input->post_get('var1', true);
@@ -127,6 +121,7 @@ if ($variable == null)
 
     echo form_hidden('count',0);
     echo form_hidden('openBlock',0);
+    echo form_hidden('sickness_id',$sickness_id);
     echo form_hidden('preview', true);
     echo form_submit('submit','Preview');
 //<input type="submit" value="Submit" >

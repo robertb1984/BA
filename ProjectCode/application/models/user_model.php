@@ -23,7 +23,9 @@
                 $result = array(
                     'result' => true,
                     'is_admin' => $row->adminstatus,
-                    'name' => $row->name);
+                    'name' => $row->name,
+                    'user_id'=> $row->id);
+                
                 return $result;
             }
             else 

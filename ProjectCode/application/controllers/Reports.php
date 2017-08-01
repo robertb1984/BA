@@ -446,6 +446,130 @@
             $this->load->view('reports/animal',$animal);
             $this->load->view('reports/sickness',$form_data);
             $this->load->view('reports/treatment',$data);
+            $visit_count = $this->Report_model->get_visit_count($id);
+            
+            //print_r($visit_count);
+            if($visit_count > 0)
+            {
+                $this_count =1;
+                $visits = $this->Report_model->get_visits($id);
+                //print_r($visits);
+                foreach($visits as $this_visit)
+                {
+                    $visit['new_visit'] = false;
+                    
+                    $visit['this_count'] = $this_count;
+                    $visit['entries'] = $this->Report_model->load_visit_fields_results($this_visit['id']);
+                    foreach ($visit['entries'] as $value)
+                    {
+                        
+                        if($value['type'] == "drop")
+                        {
+                            $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
+                            $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
+                        }
+                    }
+                
+                    $this->load->view('reports/visit',$visit);
+                    $this_count++;
+                }
+                 
+            }
+            $this->load->view('templates/footer');
+        }
+        function load_edit_report($id , $add_visit = null)
+        {
+            //check for add visit 
+            //print_r($add_visit);
+            if(null == ($add_visit))
+            {
+                $add_visit = false;
+            }
+             
+            $lock_document = true;
+            $init['load_form_data'] = $lock_document;
+            $init['reportID']= $id;
+            $init['loaded_report_entries'] = $this->Report_model->load_report_entries($id);
+            
+            $sicknessID = $init['loaded_report_entries']['sickness_id'];
+            
+            $animal['id'] =  $init['loaded_report_entries']['animal_id'];
+            $animal['load_form_data'] = $lock_document;
+            $animal['data'] = $this->Report_model->load_animal($animal['id']);
+            
+            $data['load_form_data'] = $lock_document;
+            $data['treatment_selected']= $init['loaded_report_entries']['treatment_for_sickness_id'];
+            $data['ingredients'] =  $this->Report_model->get_ingredients();
+            $data['treatment_details'] = $this->Report_model->get_details_for_treatment($data['treatment_selected']);
+            $data['dropdown_defined_treatments'] = $this->dropdownData($data['ingredients'], 'name', 'Ingredient/Treatment');
+            $data['treatments']= $this->Report_model->get_treatments_for_sickness($init['loaded_report_entries']['sickness_id']);
+            $data['dropdown_treatments'] = $this->prepare_dropdown_treatments($data['treatments'],'name','dosage' , ' treatment');
+            
+            $form_data['load_form_data'] = $lock_document;
+            $form_data['entries'] = $this->Report_model->load_input_fields_results($id);
+            foreach ($form_data['entries'] as $value)
+            {
+                if($value['type'] == "drop")
+                {
+                    $form_data[$value['name']]= $this->Report_model->get_dropdown_data($value['id']);
+                    $form_data['dropdowns'][$value['name']]= $this->dropdownData($form_data[$value['name']], 'text', $value['description']); 
+                }
+            }
+            $this->load->view('templates/header');
+            $this->load->view('reports/animal',$animal);
+            $this->load->view('reports/sickness',$form_data);
+            $this->load->view('reports/treatment',$data);
+            
+            //todo get past visits count
+            
+            $visit_count = $this->Report_model->get_visit_count($id);
+            //$count_existing_visits= $count_existing_visits['visit_count'];
+            //print_r($visit_count);
+            if($visit_count > 0)
+            {
+                $this_count =1;
+                $visits = $this->Report_model->get_visits($id);
+                //print_r($visits);
+                $visit['load_form_data'] = $lock_document;
+                foreach($visits as $this_visit)
+                {
+                    $visit['new_visit'] = false;
+                    $visit['this_count'] = $this_count;
+                    $visit['entries'] = $this->Report_model->load_visit_fields_results($this_visit['id']);
+                    foreach ($visit['entries'] as $value)
+                    {
+                        if($value['type'] == "drop")
+                        {
+                            $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
+                            $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
+                        }
+                    }
+                
+                    $this->load->view('reports/visit',$visit);
+                    $this_count++;
+                }
+                 
+            }
+            //add Visit
+            if($add_visit)
+            {
+                $visit['report_id'] = $id;
+                $visit['new_visit'] = true;
+                $visit['this_count'] = $visit_count++;
+                $visit['load_form_data'] = false;
+                //todo load_visit_fields
+                $visit['entries'] = $this->Report_model->load_visit_fields($sicknessID);
+                foreach ($visit['entries'] as $value) {
+                    if($value['type'] == "drop")
+                    {
+                        //todo get_dropdown_data_visits
+                        $visit[$value['name']]= $this->Report_model->get_dropdown_data_visits($value['id']);
+                        $visit['dropdowns'][$value['name']]= $this->dropdownData($visit[$value['name']], 'text', $value['description']); 
+                    }
+                }
+                //load formdata for visit
+                $this->load->view('reports/visit',$visit);
+            }
             $this->load->view('templates/footer');
         }
 
@@ -480,6 +604,41 @@
             $data['treatment_details'] = $this->Report_model->get_details_for_treatment($treatmentID);
             $result = json_encode($data);
             echo $result;
+        }
+        function add_examination()
+        {
+            $this->load->library('form_validation');
+            
+            $report_id = $this->input->post('report');
+            $examination_count = $this->input->post('count_examination');
+            //change status of report
+            if($examination_count == 0)
+            {
+                $this->Report_model->change_status_of_report($report_id);
+            }
+            $entries = $this->Report_model->load_examination_fields($report_id);
+            print_r($entries);
+            foreach ($entries as $entrie)
+            {
+             
+                $entrie['name'] = $entrie['name'].$examination_count;
+                //print_r($this_name);
+                $this->form_validation->set_rules($entrie['name'],$entrie['name'],$entrie['validation']);
+            }
+            
+            if($this->form_validation->run() === FALSE)
+            {
+                $this->load_edit_report($report_id,true);
+                 
+            }
+            else
+            {
+                //save the examination
+                
+                $this->Report_model->save_examination_values($report_id, $entries,$examination_count);
+  
+                redirect('/reports');
+            }
         }
 
     }

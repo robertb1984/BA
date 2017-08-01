@@ -54,6 +54,8 @@ $route['reports'] = 'Reports/overview';
 $route['login'] = 'Login/index';
 $route['users'] = 'Users/index';
 $route['create_form'] = 'Form/create_new';
+
+$route['create_visits'] = 'Form/select_disease_form';
 $route['report_search'] = 'Reports/report_search';
 $route['default_controller'] = 'Pages/view';
 

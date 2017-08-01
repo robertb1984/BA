@@ -3,13 +3,14 @@ function save_data(){
     
     var toSend =" <?php echo base64_encode(json_encode($entries)); ?> ";
     var dropdowns = " <?php echo base64_encode(json_encode($dropdowns)); ?>"
+    var thiscase = "<?php echo base64_encode(json_encode($this_defines)); ?>"
     //console.log(data);
     //toSend = Base64._utf8_encode(toSend);
     if(toSend != 0)
     {
         console.log(toSend);
         $.ajax({
-            data: {data : toSend , drop : dropdowns},
+            data: {data : toSend , drop : dropdowns, thiscase : thiscase },
             url: '<?php echo site_url('Form/save_form'); ?>',
             type:'POST',
             cache: false,

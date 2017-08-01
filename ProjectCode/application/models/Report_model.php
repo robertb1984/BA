@@ -313,11 +313,64 @@
         }
         function load_input_fields($id)
         {
-             $query = $this->db->query('
+            $query = $this->db->query('
                 SELECT sickness_value_definition.id ,type, sickness_value_definition.name , sickness_value_definition.description, validation, sickness_block.name AS blockname
                 FROM sickness_value_definition
                 JOIN sickness_block ON sickness_block.id = block_id
                 LEFT JOIN sickness_value_types ON sickness_value_types.id = sickness_value_definition.type_id
+                WHERE sickness_id = '.$id.'
+                 ;');
+            return $query->result_array();
+        }
+        function get_visit_count($report_id)
+        {
+           $query = $this->db->query('
+                SELECT COUNT(id) AS visit_count
+                FROM report_visits
+                WHERE report_id = '.$report_id.'
+                 ;');
+            $result = $query->result_array();
+           return $result[0]['visit_count'];
+        }
+        function get_visits($report_id)
+        {
+            $query = $this->db->query('
+                SELECT *
+                FROM report_visits
+                WHERE report_id = '.$report_id.'
+                 ;');
+            return $query->result_array();
+        }
+        function get_sicknesses_without_defined_visits()
+        {
+             $query = $this->db->query('
+                SELECT *
+                FROM sicknesses
+                WHERE sicknesses.id NOT IN(SELECT sickness_id from visit_block)
+                 ;');
+            return $query->result_array();
+        }
+        function load_visit_fields_results($visit_id)
+        {
+            $query = $this->db->query('
+                SELECT visit_value_definition.id ,type, visit_value_definition.name , visit_value_definition.description, validation, visit_block.name AS blockname, value
+                FROM visit_value_definition
+                JOIN visit_block ON visit_block.id = block_id
+                LEFT JOIN sickness_value_types ON sickness_value_types.id = visit_value_definition.type_id
+                LEFT JOIN report_visit_values ON report_visit_values.value_id = visit_value_definition.id
+                JOIN report_visits ON report_visits.id = report_visit_values.visit_id
+                WHERE report_visits.id = '.$visit_id.'
+              
+                 ;');
+            return $query->result_array();
+        }
+        function load_visit_fields($id)
+        {
+            $query = $this->db->query('
+                SELECT visit_value_definition.id ,type, visit_value_definition.name , visit_value_definition.description, validation, visit_block.name AS blockname
+                FROM visit_value_definition
+                JOIN visit_block ON visit_block.id = block_id
+                LEFT JOIN sickness_value_types ON sickness_value_types.id = visit_value_definition.type_id
                 WHERE sickness_id = '.$id.'
                  ;');
             return $query->result_array();
@@ -341,6 +394,15 @@
             $query = $this->db->query('
                 SELECT id,text
                 FROM sickness_value_dropdown_values
+                WHERE value_id= '.$id.'
+                 ;');
+            return $query->result_array();
+        }
+        function get_dropdown_data_visits($id)
+        {
+             $query = $this->db->query('
+                SELECT id,text
+                FROM visit_value_dropdown_values
                 WHERE value_id= '.$id.'
                  ;');
             return $query->result_array();
@@ -461,6 +523,38 @@
                }
            }
            $this->db->trans_complete();
+       }
+       function load_examination_fields($report_id)
+       {
+           $sickness_id = $this->get_sickness_id($report_id);
+           return $this->load_visit_fields($sickness_id);
+       }
+       function save_examination_values($report_id, $entries,$examination_count)
+       {
+            $this->db->trans_start();
+            
+            $data = array(
+                    'report_id'=>$report_id,
+                    'visit' => $examination_count
+                );
+            $visit_id = $this->save_data($data, 'report_visits');
+            
+            foreach($entries as $entrie)
+            {
+                $insert = array(
+                    'visit_id'=>$visit_id,
+                    'value' => $this->input->post($entrie['name'].$examination_count),
+                    'value_id' => $entrie['id']
+                );
+                $this->db->insert('report_visit_values', $insert);
+            }
+            $this->db->trans_complete();
+       }
+       function change_status_of_report($report_id)
+       {
+            $this->db->set('status', 'status+1', FALSE);
+            $this->db->where('id', $report_id);
+            $this->db->update('reports');
        }
         
     }
