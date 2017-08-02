@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2017-08-01 01:10:55
+Date: 2017-08-02 06:26:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -49,7 +49,7 @@ CREATE TABLE `animals` (
   PRIMARY KEY (`id`),
   KEY `FK_animals_subspecies` (`subspecies_id`),
   CONSTRAINT `FK_animals_species` FOREIGN KEY (`subspecies_id`) REFERENCES `species` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of animals
@@ -58,6 +58,8 @@ INSERT INTO `animals` VALUES ('1', '1', '2017-07-26 13:58:25', 'Test', '0', '4.0
 INSERT INTO `animals` VALUES ('2', '2', '2017-07-26 14:55:47', 'test', '0', '2.0000', '', '2', '1');
 INSERT INTO `animals` VALUES ('3', '1', '2017-07-26 16:11:58', 'trr', '1', '2.0000', '', '0', '2');
 INSERT INTO `animals` VALUES ('4', '2', '2017-07-31 21:11:14', 'test', '1', '1.0000', '', '12', '1');
+INSERT INTO `animals` VALUES ('5', '1', '2017-08-02 05:58:43', 'This is a release test', '0', '9000.0000', '', '3', '2');
+INSERT INTO `animals` VALUES ('6', '1', '2017-08-02 06:19:43', 'test', '1', '3.0000', '', '2', '3');
 
 -- ----------------------------
 -- Table structure for `cryptorchidism`
@@ -176,14 +178,12 @@ CREATE TABLE `reports` (
   CONSTRAINT `FK_reports_sicknesses` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_reports_used_treatment` FOREIGN KEY (`treatment_for_sickness_id`) REFERENCES `treatments_for_sicknesses` (`id`),
   CONSTRAINT `FK_reports_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of reports
 -- ----------------------------
-INSERT INTO `reports` VALUES ('1', '12', '21', '2017-07-26 13:58:25', '1', '1', '3');
-INSERT INTO `reports` VALUES ('2', '12', '21', '2017-07-26 14:55:47', '1', '2', '2');
-INSERT INTO `reports` VALUES ('3', '17', '21', '2017-07-31 21:11:14', '2', '4', '1');
+INSERT INTO `reports` VALUES ('4', '18', '21', '2017-08-02 05:58:43', '1', '5', '3');
 
 -- ----------------------------
 -- Table structure for `reports_closure`
@@ -197,12 +197,12 @@ CREATE TABLE `reports_closure` (
   PRIMARY KEY (`id`),
   KEY `FK_closing_reports` (`report_id`),
   CONSTRAINT `FK_closing_reports` FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of reports_closure
 -- ----------------------------
-INSERT INTO `reports_closure` VALUES ('1', '1', 'test', '0');
+INSERT INTO `reports_closure` VALUES ('3', '4', 'yup', '1');
 
 -- ----------------------------
 -- Table structure for `report_values`
@@ -218,20 +218,19 @@ CREATE TABLE `report_values` (
   KEY `FKReport_values_sickness_value_definition` (`value_id`),
   CONSTRAINT `FKReport_values_sickness_value_definition` FOREIGN KEY (`value_id`) REFERENCES `sickness_value_definition` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_report_values_reports` FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of report_values
 -- ----------------------------
-INSERT INTO `report_values` VALUES ('1', '1', '8', '17');
-INSERT INTO `report_values` VALUES ('2', '1', 'sada', '18');
-INSERT INTO `report_values` VALUES ('3', '1', 'ss', '19');
-INSERT INTO `report_values` VALUES ('4', '2', '9', '17');
-INSERT INTO `report_values` VALUES ('5', '2', 'test', '18');
-INSERT INTO `report_values` VALUES ('6', '2', '', '19');
-INSERT INTO `report_values` VALUES ('7', '3', '2', '26');
-INSERT INTO `report_values` VALUES ('8', '3', 'er', '27');
-INSERT INTO `report_values` VALUES ('9', '3', '17', '28');
+INSERT INTO `report_values` VALUES ('1', '4', '1', '1');
+INSERT INTO `report_values` VALUES ('2', '4', '3', '2');
+INSERT INTO `report_values` VALUES ('3', '4', '3', '3');
+INSERT INTO `report_values` VALUES ('4', '4', 'hope this still works', '4');
+INSERT INTO `report_values` VALUES ('5', '4', '5', '5');
+INSERT INTO `report_values` VALUES ('6', '4', '4', '6');
+INSERT INTO `report_values` VALUES ('7', '4', '4', '7');
+INSERT INTO `report_values` VALUES ('8', '4', 'hope this still works2', '8');
 
 -- ----------------------------
 -- Table structure for `report_visits`
@@ -250,10 +249,9 @@ CREATE TABLE `report_visits` (
 -- ----------------------------
 -- Records of report_visits
 -- ----------------------------
-INSERT INTO `report_visits` VALUES ('1', '1', '0', '2017-07-26 14:49:35');
-INSERT INTO `report_visits` VALUES ('2', '1', '1', '2017-07-26 14:51:42');
-INSERT INTO `report_visits` VALUES ('3', '2', '0', '2017-07-26 14:55:52');
-INSERT INTO `report_visits` VALUES ('4', '2', '1', '2017-07-26 14:56:01');
+INSERT INTO `report_visits` VALUES ('1', '4', '0', '2017-08-02 05:59:43');
+INSERT INTO `report_visits` VALUES ('2', '4', '1', '2017-08-02 06:00:24');
+INSERT INTO `report_visits` VALUES ('4', '4', '2', '2017-08-02 06:20:42');
 
 -- ----------------------------
 -- Table structure for `report_visit_values`
@@ -269,19 +267,35 @@ CREATE TABLE `report_visit_values` (
   KEY `FK_visit_values_definition` (`value_id`),
   CONSTRAINT `FK_visit_values_definition` FOREIGN KEY (`value_id`) REFERENCES `visit_value_definition` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_visit_values_visit` FOREIGN KEY (`visit_id`) REFERENCES `report_visits` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of report_visit_values
 -- ----------------------------
-INSERT INTO `report_visit_values` VALUES ('1', '1', '22', '15');
-INSERT INTO `report_visit_values` VALUES ('2', '1', '22', '16');
-INSERT INTO `report_visit_values` VALUES ('3', '2', '21', '15');
-INSERT INTO `report_visit_values` VALUES ('4', '2', '21', '16');
-INSERT INTO `report_visit_values` VALUES ('5', '3', '3', '15');
-INSERT INTO `report_visit_values` VALUES ('6', '3', '3', '16');
-INSERT INTO `report_visit_values` VALUES ('7', '4', '344', '15');
-INSERT INTO `report_visit_values` VALUES ('8', '4', '244', '16');
+INSERT INTO `report_visit_values` VALUES ('1', '1', '1', '1');
+INSERT INTO `report_visit_values` VALUES ('2', '1', '2', '2');
+INSERT INTO `report_visit_values` VALUES ('3', '1', '2', '3');
+INSERT INTO `report_visit_values` VALUES ('4', '1', 'grows smaler', '4');
+INSERT INTO `report_visit_values` VALUES ('5', '1', '29', '5');
+INSERT INTO `report_visit_values` VALUES ('6', '1', '2', '6');
+INSERT INTO `report_visit_values` VALUES ('7', '1', '2', '7');
+INSERT INTO `report_visit_values` VALUES ('8', '1', 'this one too', '8');
+INSERT INTO `report_visit_values` VALUES ('9', '2', '5', '1');
+INSERT INTO `report_visit_values` VALUES ('10', '2', '22.0', '2');
+INSERT INTO `report_visit_values` VALUES ('11', '2', '23.4', '3');
+INSERT INTO `report_visit_values` VALUES ('12', '2', 'bla', '4');
+INSERT INTO `report_visit_values` VALUES ('13', '2', '25', '5');
+INSERT INTO `report_visit_values` VALUES ('14', '2', '4.44', '6');
+INSERT INTO `report_visit_values` VALUES ('15', '2', '3.4', '7');
+INSERT INTO `report_visit_values` VALUES ('16', '2', 'this', '8');
+INSERT INTO `report_visit_values` VALUES ('28', '4', '5', '1');
+INSERT INTO `report_visit_values` VALUES ('29', '4', '2', '2');
+INSERT INTO `report_visit_values` VALUES ('30', '4', '2', '3');
+INSERT INTO `report_visit_values` VALUES ('31', '4', '2', '4');
+INSERT INTO `report_visit_values` VALUES ('32', '4', '25', '5');
+INSERT INTO `report_visit_values` VALUES ('33', '4', '2', '6');
+INSERT INTO `report_visit_values` VALUES ('34', '4', '2', '7');
+INSERT INTO `report_visit_values` VALUES ('35', '4', '2', '8');
 
 -- ----------------------------
 -- Table structure for `sicknesses`
@@ -296,16 +310,13 @@ CREATE TABLE `sicknesses` (
   PRIMARY KEY (`id`),
   KEY `FK_sicknesses_users` (`creator`),
   CONSTRAINT `FK_sicknesses_users` FOREIGN KEY (`creator`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sicknesses
 -- ----------------------------
-INSERT INTO `sicknesses` VALUES ('10', 'Test2', 'this is a boring test', '21', '1');
-INSERT INTO `sicknesses` VALUES ('11', 'test3', 'droptest', '21', '1');
-INSERT INTO `sicknesses` VALUES ('12', 'Droptest', 'A test for droptest', '21', '1');
-INSERT INTO `sicknesses` VALUES ('13', 'sasda', 'dddd', '21', '1');
-INSERT INTO `sicknesses` VALUES ('17', 'Testbug', 'this is 2test', '21', '0');
+INSERT INTO `sicknesses` VALUES ('18', 'Cryptorchidism', 'Cryptorchidism is the absence of one or both testes from the scrotum. It is the most common birth defect of the male genital.[1] About 3% of full-term and 30% of premature infant boys are born with at least one undescended testis. However, about 80% of cryptorchid testes descend by the first year of life (the majority within three months), making the true incidence of cryptorchidism around 1% overall. Cryptorchidism may develop after infancy, sometimes as late as young adulthood, but that is exceptional.', '21', '1');
+INSERT INTO `sicknesses` VALUES ('19', 'Induction of Ovulation', 'sry no idea', '21', '1');
 
 -- ----------------------------
 -- Table structure for `sickness_block`
@@ -318,18 +329,16 @@ CREATE TABLE `sickness_block` (
   PRIMARY KEY (`id`),
   KEY `FK_block_sickness` (`sickness_id`),
   CONSTRAINT `FK_block_sickness` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sickness_block
 -- ----------------------------
-INSERT INTO `sickness_block` VALUES ('4', '10', 'Block 1');
-INSERT INTO `sickness_block` VALUES ('5', '10', 'Block2');
-INSERT INTO `sickness_block` VALUES ('6', '11', 'dda');
-INSERT INTO `sickness_block` VALUES ('7', '12', 'Droptest');
-INSERT INTO `sickness_block` VALUES ('8', '12', 'textblock');
-INSERT INTO `sickness_block` VALUES ('9', '13', 'testz');
-INSERT INTO `sickness_block` VALUES ('13', '17', 'testthis');
+INSERT INTO `sickness_block` VALUES ('1', '18', 'Right Testicle');
+INSERT INTO `sickness_block` VALUES ('2', '18', 'Left Testicle');
+INSERT INTO `sickness_block` VALUES ('3', '19', 'Housing');
+INSERT INTO `sickness_block` VALUES ('4', '19', 'Female Reproduction Histo');
+INSERT INTO `sickness_block` VALUES ('5', '19', 'Female Medical History');
 
 -- ----------------------------
 -- Table structure for `sickness_value_definition`
@@ -347,23 +356,23 @@ CREATE TABLE `sickness_value_definition` (
   KEY `FK_value_block` (`block_id`),
   CONSTRAINT `FK_value_block` FOREIGN KEY (`block_id`) REFERENCES `sickness_block` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_vd_type` FOREIGN KEY (`type_id`) REFERENCES `sickness_value_types` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sickness_value_definition
 -- ----------------------------
-INSERT INTO `sickness_value_definition` VALUES ('12', '4', '1', 'block1_number', 'how many:', 'trim|required|numeric');
-INSERT INTO `sickness_value_definition` VALUES ('13', '4', '1', 'block1_notes', 'please enter notes:', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('14', '5', '1', 'Block2_number', 'how many this time', 'trim|required|numeric');
-INSERT INTO `sickness_value_definition` VALUES ('15', '5', '1', 'text2', 'please enter text :', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('16', '6', '2', 'ssaaad', '', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('17', '7', '2', 'dropdownone', 'Chose drop', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('18', '8', '1', 'textthis', 'enter notes', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('19', '8', '1', 'notestwo', 'notes 2', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('20', '9', '1', 'dddd', 'please enter number 2', 'trim|required|numeric');
-INSERT INTO `sickness_value_definition` VALUES ('26', '13', '1', 'number', 'please enter number :', 'trim|required|numeric');
-INSERT INTO `sickness_value_definition` VALUES ('27', '13', '1', 'text', 'please enter text :', 'trim');
-INSERT INTO `sickness_value_definition` VALUES ('28', '13', '2', 'droop', 'This Value', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('1', '1', '2', 'right_testicle', 'Location', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('2', '1', '1', 'right_testicle_diameter', 'please enter Size(diameter): ', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('3', '1', '1', 'right_testiclelength', 'and length :', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('4', '1', '1', 'right_testicle_notes', 'please enter notes: ', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('5', '2', '2', 'Left_testicle_location', 'Location', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('6', '2', '1', 'Left_testicle_diameter', 'please enter Size(diameter)', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('7', '2', '1', 'Left_testicle_length', 'and length: ', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('8', '2', '1', 'left_testicle_notes', 'please enter notes:', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('9', '3', '2', 'thisHousing', 'Housing', 'trim');
+INSERT INTO `sickness_value_definition` VALUES ('10', '4', '1', 'interval_heats', 'Interval of heats(months)', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('11', '4', '1', 'litters', 'Litters', 'trim|required|numeric');
+INSERT INTO `sickness_value_definition` VALUES ('12', '5', '2', 'diseases', 'disease', 'trim');
 
 -- ----------------------------
 -- Table structure for `sickness_value_dropdown_values`
@@ -376,19 +385,24 @@ CREATE TABLE `sickness_value_dropdown_values` (
   PRIMARY KEY (`id`),
   KEY `FK_drop_value` (`value_id`),
   CONSTRAINT `FK_drop_value` FOREIGN KEY (`value_id`) REFERENCES `sickness_value_definition` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sickness_value_dropdown_values
 -- ----------------------------
-INSERT INTO `sickness_value_dropdown_values` VALUES ('5', '16', 'please ');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('6', '16', 'enter dropdowns');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('7', '16', ' comma separated');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('8', '17', 'please ');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('9', '17', 'enter dropdowns');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('10', '17', ' comma separated');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('17', '28', 'Values');
-INSERT INTO `sickness_value_dropdown_values` VALUES ('18', '28', 'this');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('1', '1', 'scrotal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('2', '1', ' inguinal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('3', '1', ' abdominal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('4', '1', ' ectopic');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('5', '5', 'scrotal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('6', '5', ' inguinal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('7', '5', ' abdominal');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('8', '5', ' ectopic');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('9', '9', 'in house');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('10', '9', ' kennel');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('11', '12', 'diabetes');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('12', '12', ' incontinence');
+INSERT INTO `sickness_value_dropdown_values` VALUES ('13', '12', ' pyometra');
 
 -- ----------------------------
 -- Table structure for `sickness_value_types`
@@ -423,23 +437,6 @@ CREATE TABLE `species` (
 -- ----------------------------
 INSERT INTO `species` VALUES ('1', 'Dog', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `species` VALUES ('2', 'Hamster', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- ----------------------------
--- Table structure for `symptoms`
--- ----------------------------
-DROP TABLE IF EXISTS `symptoms`;
-CREATE TABLE `symptoms` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `report_id` int(10) unsigned NOT NULL,
-  `note` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_symptoms_reports` (`report_id`),
-  CONSTRAINT `FK_symptoms_reports` FOREIGN KEY (`report_id`) REFERENCES `reports` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of symptoms
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `test`
@@ -508,8 +505,8 @@ CREATE TABLE `treatments_details` (
 -- ----------------------------
 -- Records of treatments_details
 -- ----------------------------
-INSERT INTO `treatments_details` VALUES ('1', '1', '230 ng/kg', '2', '', '2');
-INSERT INTO `treatments_details` VALUES ('2', '2', '230 ng/kg', '2', 'test', '2');
+INSERT INTO `treatments_details` VALUES ('1', '1', '230 ng/kg', '4', '', '2');
+INSERT INTO `treatments_details` VALUES ('2', '2', '344', '3', '333', '3');
 
 -- ----------------------------
 -- Table structure for `treatments_for_sicknesses`
@@ -534,8 +531,8 @@ CREATE TABLE `treatments_for_sicknesses` (
 -- ----------------------------
 -- Records of treatments_for_sicknesses
 -- ----------------------------
-INSERT INTO `treatments_for_sicknesses` VALUES ('1', '8', '12', '1', null, null);
-INSERT INTO `treatments_for_sicknesses` VALUES ('2', '8', '17', '2', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('1', '1', '18', '1', null, null);
+INSERT INTO `treatments_for_sicknesses` VALUES ('2', '1', '19', '1', null, null);
 
 -- ----------------------------
 -- Table structure for `users`
@@ -572,16 +569,16 @@ CREATE TABLE `visit_block` (
   PRIMARY KEY (`id`),
   KEY `FK_block_sickness` (`sickness_id`),
   CONSTRAINT `visit_block_ibfk_1` FOREIGN KEY (`sickness_id`) REFERENCES `sicknesses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of visit_block
 -- ----------------------------
-INSERT INTO `visit_block` VALUES ('1', '10', 'Visit', '1');
-INSERT INTO `visit_block` VALUES ('5', '10', 'Block 1', '1');
-INSERT INTO `visit_block` VALUES ('6', '10', 'Block2', '1');
-INSERT INTO `visit_block` VALUES ('12', '11', 'dda', '1');
-INSERT INTO `visit_block` VALUES ('14', '12', 'sadas', '1');
+INSERT INTO `visit_block` VALUES ('1', '18', 'Right Testicle', '1');
+INSERT INTO `visit_block` VALUES ('2', '18', 'Left Testicle', '1');
+INSERT INTO `visit_block` VALUES ('4', '19', 'Vagina', '1');
+INSERT INTO `visit_block` VALUES ('5', '19', 'Vaginal smear', '1');
+INSERT INTO `visit_block` VALUES ('6', '19', 'Bloodtestresults', '1');
 
 -- ----------------------------
 -- Table structure for `visit_value_definition`
@@ -598,20 +595,30 @@ CREATE TABLE `visit_value_definition` (
   KEY `FK_vd_type` (`type_id`),
   KEY `FK_value_block` (`block_id`),
   CONSTRAINT `FK_def_block` FOREIGN KEY (`block_id`) REFERENCES `visit_block` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of visit_value_definition
 -- ----------------------------
-INSERT INTO `visit_value_definition` VALUES ('1', '1', '1', 'test_2', 'blablabla : ', 'trim');
-INSERT INTO `visit_value_definition` VALUES ('2', '1', '1', 'test_3', 'bla2 :', 'trim');
-INSERT INTO `visit_value_definition` VALUES ('3', '5', '1', 'block1_number', 'how many:', 'trim|required|numeric');
-INSERT INTO `visit_value_definition` VALUES ('4', '5', '1', 'block1_notes', 'please enter notes:', 'trim');
-INSERT INTO `visit_value_definition` VALUES ('5', '6', '1', 'Block2_number', 'how many this time', 'trim|required|numeric');
-INSERT INTO `visit_value_definition` VALUES ('6', '6', '1', 'text2', 'please enter text :', 'trim');
-INSERT INTO `visit_value_definition` VALUES ('13', '12', '2', 'ssaaad', '', 'trim');
-INSERT INTO `visit_value_definition` VALUES ('15', '14', '1', 'aaassss', 'please enter text:', 'trim|required|numeric');
-INSERT INTO `visit_value_definition` VALUES ('16', '14', '1', 'asasdasdasdasd', 'please enter text2:', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('1', '1', '2', 'right_testicle', 'Location', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('2', '1', '1', 'right_testicle_diameter', 'please enter Size(diameter): ', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('3', '1', '1', 'right_testiclelength', 'and length :', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('4', '1', '1', 'right_testicle_notes', 'please enter notes: ', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('5', '2', '2', 'Left_testicle_location', 'Location', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('6', '2', '1', 'Left_testicle_diameter', 'please enter Size(diameter)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('7', '2', '1', 'Left_testicle_length', 'and length: ', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('8', '2', '1', 'left_testicle_notes', 'please enter notes:', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('16', '4', '2', 'Discharge', 'discharge', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('17', '4', '2', 'quality_of_discharge', 'quality', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('18', '4', '2', 'folds', 'vaginal folds', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('19', '5', '1', 'basalcells', 'basalcells(%)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('20', '5', '1', 'para', 'parabasalcells(%)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('21', '5', '1', 'intermediate', 'intermediatecells(%)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('22', '5', '1', 'super', 'superficialcells(%)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('23', '5', '2', 'WBC', 'WBC?!', 'trim');
+INSERT INTO `visit_value_definition` VALUES ('24', '6', '1', 'oeastr', 'Oeastradiol(pmol/L)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('25', '6', '1', 'Progesterone', 'Progesterone(nmol/L)', 'trim|required|numeric');
+INSERT INTO `visit_value_definition` VALUES ('26', '6', '1', 'LH', 'LH(nmol/L)', 'trim|required|numeric');
 
 -- ----------------------------
 -- Table structure for `visit_value_dropdown_values`
@@ -624,11 +631,54 @@ CREATE TABLE `visit_value_dropdown_values` (
   PRIMARY KEY (`id`),
   KEY `FK_drop_value` (`value_id`),
   CONSTRAINT `FK_drop_def` FOREIGN KEY (`value_id`) REFERENCES `visit_value_definition` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of visit_value_dropdown_values
 -- ----------------------------
-INSERT INTO `visit_value_dropdown_values` VALUES ('4', '13', 'please ');
-INSERT INTO `visit_value_dropdown_values` VALUES ('5', '13', 'enter dropdowns');
-INSERT INTO `visit_value_dropdown_values` VALUES ('6', '13', ' comma separated');
+INSERT INTO `visit_value_dropdown_values` VALUES ('1', '1', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('2', '2', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('3', '3', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('4', '4', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('5', '1', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('6', '2', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('7', '3', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('8', '4', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('9', '1', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('10', '2', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('11', '3', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('12', '4', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('13', '1', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('14', '2', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('15', '3', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('16', '4', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('17', '5', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('18', '6', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('19', '7', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('20', '8', 'scrotal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('21', '5', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('22', '6', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('23', '7', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('24', '8', ' inguinal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('25', '5', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('26', '6', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('27', '7', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('28', '8', ' abdominal');
+INSERT INTO `visit_value_dropdown_values` VALUES ('29', '5', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('30', '6', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('31', '7', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('32', '8', ' ectopic');
+INSERT INTO `visit_value_dropdown_values` VALUES ('64', '16', 'yes');
+INSERT INTO `visit_value_dropdown_values` VALUES ('65', '16', ' no');
+INSERT INTO `visit_value_dropdown_values` VALUES ('66', '17', 'none');
+INSERT INTO `visit_value_dropdown_values` VALUES ('67', '17', ' clear');
+INSERT INTO `visit_value_dropdown_values` VALUES ('68', '17', ' semisanguineous');
+INSERT INTO `visit_value_dropdown_values` VALUES ('69', '17', ' sanguineous');
+INSERT INTO `visit_value_dropdown_values` VALUES ('70', '17', ' pus');
+INSERT INTO `visit_value_dropdown_values` VALUES ('71', '18', '-');
+INSERT INTO `visit_value_dropdown_values` VALUES ('72', '18', '+');
+INSERT INTO `visit_value_dropdown_values` VALUES ('73', '18', '++');
+INSERT INTO `visit_value_dropdown_values` VALUES ('74', '18', '+++');
+INSERT INTO `visit_value_dropdown_values` VALUES ('75', '23', 'none');
+INSERT INTO `visit_value_dropdown_values` VALUES ('76', '23', ' single');
+INSERT INTO `visit_value_dropdown_values` VALUES ('77', '23', ' many');
