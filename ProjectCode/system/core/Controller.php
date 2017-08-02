@@ -105,6 +105,28 @@ class CI_Controller {
             }
             
         }
+        //checks if this user is_admin
+        function is_admin()
+        {
+            $is_admin = FALSE;
+            $is_admin = $this->session->userdata('is_admin');
+            if(!$is_admin)
+            {
+                echo 'no login';
+                redirect('/reports');
+                //die();
+            } 
+        }
+        //
+        function is_owner($owner_id)
+        {
+            if(!($owner_id == $this->session->userdata('user_id')))
+            {
+                echo "<script> alert('No Access!!!'); </script>";
+                redirect('/reports');
+                
+            }       
+        }
         //function that creates a result array with ID as array element and the hopeful clearly "name" column
         function dropdownData($result,$selectColumn,$columnDescription )
         {
